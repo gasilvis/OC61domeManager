@@ -180,7 +180,7 @@ Partial Class SetupDialogForm
         Me.Name = "SetupDialogForm"
         Me.ShowInTaskbar = False
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
-        Me.Text = "OC61 dome wrapper "
+        Me.Text = "OC61 dome Driver properties"
         Me.TableLayoutPanel1.ResumeLayout(False)
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)

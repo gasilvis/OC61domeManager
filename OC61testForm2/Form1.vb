@@ -3,9 +3,7 @@
     Private driver As ASCOM.DriverAccess.Dome
 
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        ' connect automatically if possible ?
-
-
+        SetUIState()
     End Sub
 
     ''' <summary>

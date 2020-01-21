@@ -98,6 +98,7 @@ Public Class Dome
 
         'TODO: Implement your additional construction here
 
+
         TL.LogMessage("Dome", "Completed initialisation")
     End Sub
 
@@ -115,7 +116,7 @@ Public Class Dome
     Public Sub SetupDialog() Implements IDomeV2.SetupDialog
         ' consider only showing the setup dialog if not connected
         ' or call a different dialog if connected
-        If IsConnected And childDome.IsConnected Then
+        If IsConnected And childDome.Connected Then
             System.Windows.Forms.MessageBox.Show("Already connected, just press OK")
         End If
 
@@ -123,6 +124,7 @@ Public Class Dome
             Dim result As System.Windows.Forms.DialogResult = F.ShowDialog()
             If result = DialogResult.OK Then
                 WriteProfile() ' Persist device configuration values to the ASCOM Profile store
+                ' TODO  connect to child
             End If
         End Using
     End Sub
@@ -181,10 +183,12 @@ Public Class Dome
                 connectedState = True
                 TL.LogMessage("Connected Set", "Connecting to port " + comPort)
                 ' TODO connect to the device
+                childDome.Connected = True
             Else
                 connectedState = False
                 TL.LogMessage("Connected Set", "Disconnecting from port " + comPort)
                 ' TODO disconnect from the device
+                childDome.Connected = False
             End If
         End Set
     End Property
@@ -502,9 +506,11 @@ Public Class Dome
     Private ReadOnly Property IsConnected As Boolean
         Get
             ' TODO check that the driver hardware connection exists and is connected to the hardware
+            ' childDome and the serial port need to be up.
             If Not childDome.Connected Then
                 connectedState = False
             End If
+
             Return connectedState
         End Get
     End Property

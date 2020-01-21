@@ -11,6 +11,7 @@ Public Class SetupDialogForm
         Dome.comPort = ComboBoxComPort.SelectedItem ' Update the state variables with results from the dialogue
         Dome.traceState = chkTrace.Checked
         Dome.childDomeId = labelDriverId.Text
+        ' TODO connect automatically?
         Me.DialogResult = System.Windows.Forms.DialogResult.OK
         Me.Close()
     End Sub
@@ -58,10 +59,12 @@ Public Class SetupDialogForm
 
     Private Sub buttonConnect_Click(sender As Object, e As EventArgs) Handles buttonConnect.Click
         ' connect to childDome
-        If (Dome.childDome.Connected) Then
+        If (Dome.childDome.Connected) Then ' disconnect
             Dome.childDome.Connected = False
         Else
             Dome.childDome = New ASCOM.DriverAccess.Dome(Dome.childDomeId)
+            ' TODO check if serial port is set too
+            ' legacy code says send a '*' and get a '*' back means the PCtrl is online.
             Dome.childDome.Connected = True
         End If
 
