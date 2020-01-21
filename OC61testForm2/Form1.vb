@@ -2,6 +2,12 @@
 
     Private driver As ASCOM.DriverAccess.Dome
 
+    Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        ' connect automatically if possible ?
+
+
+    End Sub
+
     ''' <summary>
     ''' This event is where the driver is choosen. The device ID will be saved in the settings.
     ''' </summary>
@@ -41,6 +47,7 @@
         buttonConnect.Enabled = Not String.IsNullOrEmpty(My.Settings.DriverId)
         buttonChoose.Enabled = Not IsConnected
         buttonConnect.Text = IIf(IsConnected, "Disconnect", "Connect")
+        GroupBox1.Enabled = IsConnected
     End Sub
 
     ''' <summary>
@@ -59,5 +66,9 @@
     End Property
 
     ' TODO: Add additional UI and controls to test more of the driver being tested.
+
+    Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
+        Label1.Text = driver.AtPark()
+    End Sub
 
 End Class

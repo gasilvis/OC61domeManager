@@ -115,7 +115,7 @@ Public Class Dome
     Public Sub SetupDialog() Implements IDomeV2.SetupDialog
         ' consider only showing the setup dialog if not connected
         ' or call a different dialog if connected
-        If IsConnected And childDome.Connected Then
+        If IsConnected And childDome.IsConnected Then
             System.Windows.Forms.MessageBox.Show("Already connected, just press OK")
         End If
 
