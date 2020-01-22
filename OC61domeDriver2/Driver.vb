@@ -183,7 +183,7 @@ Public Class Dome
                 connectedState = True
                 TL.LogMessage("Connected Set", "Connecting to port " + comPort)
                 ' TODO connect to the device
-                childDome.Connected = True
+                childDome.Connected = True ' TODO throw error on fail
             Else
                 connectedState = False
                 TL.LogMessage("Connected Set", "Disconnecting from port " + comPort)
@@ -196,7 +196,7 @@ Public Class Dome
     Public ReadOnly Property Description As String Implements IDomeV2.Description
         Get
             ' this pattern seems to be needed to allow a public property to return a private field
-            Dim d As String = driverDescription
+            Dim d As String = childDome.Description
             TL.LogMessage("Description Get", d)
             Return d
         End Get
@@ -206,7 +206,8 @@ Public Class Dome
         Get
             Dim m_version As Version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version
             ' TODO customise this driver description
-            Dim s_driverInfo As String = "Information about the driver itself. Version: " + m_version.Major.ToString() + "." + m_version.Minor.ToString()
+            'Dim s_driverInfo As String = "Information about the driver itself. Version: " + m_version.Major.ToString() + "." + m_version.Minor.ToString()
+            Dim s_driverInfo As String = childDome.DriverInfo
             TL.LogMessage("DriverInfo Get", s_driverInfo)
             Return s_driverInfo
         End Get
@@ -216,14 +217,16 @@ Public Class Dome
         Get
             ' Get our own assembly and report its version number
             TL.LogMessage("DriverVersion Get", Reflection.Assembly.GetExecutingAssembly.GetName.Version.ToString(2))
-            Return Reflection.Assembly.GetExecutingAssembly.GetName.Version.ToString(2)
+            'Return Reflection.Assembly.GetExecutingAssembly.GetName.Version.ToString(2)
+            Return childDome.DriverVersion
         End Get
     End Property
 
     Public ReadOnly Property InterfaceVersion() As Short Implements IDomeV2.InterfaceVersion
         Get
             TL.LogMessage("InterfaceVersion Get", "2")
-            Return 2
+            'Return 2
+            Return childDome.InterfaceVersion
         End Get
     End Property
 
@@ -231,7 +234,8 @@ Public Class Dome
         Get
             Dim s_name As String = "Short driver name - please customise"
             TL.LogMessage("Name Get", s_name)
-            Return s_name
+            'Return s_name
+            Return childDome.Name
         End Get
     End Property
 
@@ -255,7 +259,7 @@ Public Class Dome
     Public Sub AbortSlew() Implements IDomeV2.AbortSlew
         ' This is a mandatory parameter but we have no action to take in this simple driver
         childDome.AbortSlew()
-        TL.LogMessage("AbortSlew", "Child Completed")
+        TL.LogMessage("AbortSlew", "Ask the child.")
     End Sub
 
     Public ReadOnly Property Altitude() As Double Implements IDomeV2.Altitude

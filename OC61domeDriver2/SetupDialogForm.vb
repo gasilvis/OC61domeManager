@@ -1,7 +1,7 @@
 Imports System.Windows.Forms
 Imports System.Runtime.InteropServices
 Imports ASCOM.Utilities
-Imports ASCOM.OC61domeDriver
+'Imports ASCOM.OC61domeDriver
 
 <ComVisible(False)>
 Public Class SetupDialogForm
