@@ -8,10 +8,10 @@ Imports System.Runtime.InteropServices
 
 ' Review the values of the assembly attributes
 
-<Assembly: AssemblyTitle("ASCOM OC61domeDriver2.Dome")>
-<Assembly: AssemblyDescription("ASCOM Dome driver for OC61domeDriver2")>
+<Assembly: AssemblyTitle("ASCOM OC61domeServer2.Dome")>
+<Assembly: AssemblyDescription("ASCOM Dome driver for OC61domeServer2")>
 <Assembly: AssemblyCompany("ASCOM Initiative")>
-<Assembly: AssemblyProduct("ASCOM Dome driver for OC61domeDriver2")>
+<Assembly: AssemblyProduct("ASCOM Dome driver for OC61domeServer2")>
 <Assembly: AssemblyCopyright("Copyright © 2020, The ASCOM Intiative")>
 <Assembly: AssemblyTrademark("")>
 

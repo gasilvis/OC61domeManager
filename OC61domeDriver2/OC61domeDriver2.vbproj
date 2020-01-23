@@ -8,7 +8,7 @@
     <ProjectGuid>{71BB4DA7-4092-416D-89FE-97CD15207371}</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>ASCOM.OC61domeDriver2</RootNamespace>
-    <AssemblyName>ASCOM.OC61domeDriver2.Dome</AssemblyName>
+    <AssemblyName>ASCOM.OC61domeServer2.Dome</AssemblyName>
     <MyType>Windows</MyType>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
@@ -202,6 +202,12 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\OC61domeServer2\OC61domeServer2.csproj">
+      <Project>{3689a2cb-94c5-4012-a5cf-7e7d1dd27143}</Project>
+      <Name>OC61domeServer2</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

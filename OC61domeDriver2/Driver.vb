@@ -46,8 +46,14 @@ Imports System.Runtime.InteropServices
 Imports System.Text
 
 <Guid("5ff4c119-d85c-49ac-8fc6-00aa50af7c95")>
+<ProgId(“ASCOM.OC61domeServer2.Dome”)>
+<ServedClassName(“OC61 Dome Server”)>
 <ClassInterface(ClassInterfaceType.None)>
 Public Class Dome
+    '==================================
+    Inherits ReferenceCountedObjectBase
+    Implements IDomeV2
+    '==================================
 
     ' The Guid attribute sets the CLSID for ASCOM.OC61domeDriver2.Dome
     ' The ClassInterface/None addribute prevents an empty interface called
@@ -61,8 +67,8 @@ Public Class Dome
     '
     ' Driver ID and descriptive string that shows in the Chooser
     '
-    Friend Shared driverID As String = "ASCOM.OC61domeDriver2.Dome"
-    Private Shared driverDescription As String = "OC61domeDriver2 Dome"
+    'Friend Shared driverID As String = "ASCOM.OC61domeServer2.Dome"
+    'Private Shared driverDescription As String = "OC61domeServer2 Dome"
 
     Friend Shared comPortProfileName As String = "COM Port" 'Constants used for Profile persistence
     Friend Shared traceStateProfileName As String = "Trace Level"
@@ -85,9 +91,9 @@ Public Class Dome
     ' Constructor - Must be public for COM registration!
     '
     Public Sub New()
-
+        s_csDriverID = Marshal.GenerateProgIdForType(Me.GetType())
         ReadProfile() ' Read device configuration from the ASCOM Profile store
-        TL = New TraceLogger("", "OC61domeDriver2")
+        TL = New TraceLogger("", "OC61domeServer2")
         TL.Enabled = traceState
         TL.LogMessage("Dome", "Starting initialisation")
 
@@ -474,35 +480,6 @@ Public Class Dome
     ' here are some useful properties and methods that can be used as required
     ' to help with
 
-#Region "ASCOM Registration"
-
-    Private Shared Sub RegUnregASCOM(ByVal bRegister As Boolean)
-
-        Using P As New Profile() With {.DeviceType = "Dome"}
-            If bRegister Then
-                P.Register(driverID, driverDescription)
-            Else
-                P.Unregister(driverID)
-            End If
-        End Using
-
-    End Sub
-
-    <ComRegisterFunction()>
-    Public Shared Sub RegisterASCOM(ByVal T As Type)
-
-        RegUnregASCOM(True)
-
-    End Sub
-
-    <ComUnregisterFunction()>
-    Public Shared Sub UnregisterASCOM(ByVal T As Type)
-
-        RegUnregASCOM(False)
-
-    End Sub
-
-#End Region
 
     ''' <summary>
     ''' Returns true if there is a valid connection to the driver hardware
