@@ -36,6 +36,7 @@ Imports ASCOM
 Imports ASCOM.Astrometry
 Imports ASCOM.Astrometry.AstroUtils
 Imports ASCOM.DeviceInterface
+Imports ASCOM.OC61domeServer2
 Imports ASCOM.Utilities
 
 Imports System
@@ -52,7 +53,6 @@ Imports System.Text
 Public Class Dome
     '==================================
     Inherits ReferenceCountedObjectBase
-    Implements IDomeV2
     '==================================
 
     ' The Guid attribute sets the CLSID for ASCOM.OC61domeDriver2.Dome
@@ -91,7 +91,7 @@ Public Class Dome
     ' Constructor - Must be public for COM registration!
     '
     Public Sub New()
-        s_csDriverID = Marshal.GenerateProgIdForType(Me.GetType())
+        DriverID = Marshal.GenerateProgIdForType(Me.GetType())
         ReadProfile() ' Read device configuration from the ASCOM Profile store
         TL = New TraceLogger("", "OC61domeServer2")
         TL.Enabled = traceState
@@ -261,6 +261,7 @@ Public Class Dome
 #Region "IDome Implementation"
 
     Private domeShutterState As Boolean = False ' Variable to hold the open/closed status of the shutter, true = Open
+    Private DriverID As String
 
     Public Sub AbortSlew() Implements IDomeV2.AbortSlew
         ' This is a mandatory parameter but we have no action to take in this simple driver
