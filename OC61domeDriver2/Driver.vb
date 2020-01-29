@@ -187,14 +187,18 @@ Public Class Dome
 
             If value Then
                 connectedState = True
-                TL.LogMessage("Connected Set", "Connecting to port " + comPort)
-                ' TODO connect to the device
-                childDome.Connected = True ' TODO throw error on fail
+                TL.LogMessage("Connected Set", "Connecting to port " + comPort + " and " + childDomeId)
+                childDome.Connected = True
+                ' TODO throw error on fail
+                SharedResources.comPort = comPort ' TODO is comport set?
+                SharedResources.Connected = True
+                ' TODO throw error on fail
             Else
                 connectedState = False
                 TL.LogMessage("Connected Set", "Disconnecting from port " + comPort)
                 ' TODO disconnect from the device
                 childDome.Connected = False
+                SharedResources.Connected = False
             End If
         End Set
     End Property
@@ -487,9 +491,17 @@ Public Class Dome
     ''' </summary>
     Private ReadOnly Property IsConnected As Boolean
         Get
-            ' TODO check that the driver hardware connection exists and is connected to the hardware
+            ' Check that the driver hardware connection exists and is connected to the hardware
             ' childDome and the serial port need to be up.
+            connectedState = True ' the hope
+            ' is the childDome connected?
             If Not childDome.Connected Then
+                TL.LogMessage("IsConnected", "childDome not connected.")
+                connectedState = False
+            End If
+            ' is the serial port to the periperal controller connected?
+            If Not SharedResources.Connected Then
+                TL.LogMessage("IsConnected", "Serial port to Peripheral Controller not collected.")
                 connectedState = False
             End If
 

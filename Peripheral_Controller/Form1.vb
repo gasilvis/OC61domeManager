@@ -58,6 +58,111 @@
         End Get
     End Property
 
-    ' TODO: Add additional UI and controls to test more of the driver being tested.
+    Private Sub cmdOver_ride_HorizonSensor_Click(sender As Object, e As EventArgs) Handles cmdOver_ride_HorizonSensor.Click
+        'MSComm1.Output = "*OVER_RIDE_HORZ_LIMIT" & vbCr
+    End Sub
 
+    Private Sub cmdGetHorizonSenseStatus_Click(sender As Object, e As EventArgs) Handles cmdGetHorizonSenseStatus.Click
+        'MSComm1.Output = "*HORIZON_STATUS" & vbCr
+    End Sub
+
+    Private Sub cmdOpenMirrorCover_Click(sender As Object, e As EventArgs) Handles cmdOpenMirrorCover.Click
+        'MSComm1.Output = "*OPEN_MIRROR_COVER" & vbCr
+    End Sub
+
+    Private Sub cmdShutMirrorCover_Click(sender As Object, e As EventArgs) Handles cmdShutMirrorCover.Click
+        'MSComm1.Output = "*CLOSE_MIRROR_COVER" & vbCr
+    End Sub
+
+    Private Sub cmdGetMirrorCoverStatus_Click(sender As Object, e As EventArgs) Handles cmdGetMirrorCoverStatus.Click
+        'MSComm1.Output = "*MIRROR_COVER_STATUS" & vbCr
+    End Sub
+
+    Private Sub cmdClearList_Click(sender As Object, e As EventArgs) Handles cmdClearList.Click
+        List1.Clear()
+    End Sub
+
+    Private Sub cmdDriveFlipMirrorIn_Click(sender As Object, e As EventArgs) Handles cmdDriveFlipMirrorIn.Click
+        'MSComm1.Output = "*FLIP_MIRROR_IN" & vbCr
+    End Sub
+
+    Private Sub cmdDriveFlipMirrorOut_Click(sender As Object, e As EventArgs) Handles cmdDriveFlipMirrorOut.Click
+        'MSComm1.Output = "*FLIP_MIRROR_OUT" & vbCr
+    End Sub
+
+    Private Sub cmdGetFlipMirrorStatus_Click(sender As Object, e As EventArgs) Handles cmdGetFlipMirrorStatus.Click
+        'MSComm1.Output = "*FLIP_MIRROR_STATUS" & vbCr
+    End Sub
+
+    Private Sub cmdEnablePositionSend_Click(sender As Object, e As EventArgs) Handles cmdEnablePositionSend.Click
+        'MSComm1.Output = "*POSITION_SEND_ON" & vbCr
+    End Sub
+
+    Private Sub cmdDisablePositionSend_Click(sender As Object, e As EventArgs) Handles cmdDisablePositionSend.Click
+        'MSComm1.Output = "*POSITION_SEND_OFF" & vbCr
+    End Sub
+
+    Private Sub cmdGetPositions_Click(sender As Object, e As EventArgs) Handles cmdGetPositions.Click
+        'MSComm1.Output = "*SEND_POSITION" & vbCr
+    End Sub
+
+    Private Sub cmdGetPot_ADU_Values_Click(sender As Object, e As EventArgs) Handles cmdGetPot_ADU_Values.Click
+        'MSComm1.Output = "*SEND_ADC_VALS" & vbCr
+    End Sub
+
+    Private Sub cmdGetHA_Pot_ZeroRef_Click(sender As Object, e As EventArgs) Handles cmdGetHA_Pot_ZeroRef.Click
+        'MSComm1.Output = "*SEND_HA_ZERO_REF_VAL" & vbCr
+    End Sub
+
+    Private Sub cmdSetHA_Pot_ZeroRef_Click(sender As Object, e As EventArgs) Handles cmdSetHA_Pot_ZeroRef.Click
+        If txtHA_Pot_ZeroRef.Text = "" Then Exit Sub
+        If Val(txtHA_Pot_ZeroRef.Text) = 0 Then Exit Sub
+        'MSComm1.Output = "*SET_HA_ZERO_REF_VAL" & txtHA_Pot_ZeroRef.Text & vbCr
+    End Sub
+
+    Private Sub cmdGetDEC_Pot_ZeroRef_Click(sender As Object, e As EventArgs) Handles cmdGetDEC_Pot_ZeroRef.Click
+        'MSComm1.Output = "*SEND_DEC_ZERO_REF_VAL" & vbCr
+    End Sub
+
+    Private Sub cmdSetDEC_Pot_ZeroRef_Click(sender As Object, e As EventArgs) Handles cmdSetDEC_Pot_ZeroRef.Click
+        If txtDEC_Pot_ZeroRef.Text = "" Then Exit Sub
+        If Val(txtDEC_Pot_ZeroRef.Text) = 0 Then Exit Sub
+        'MSComm1.Output = "*SET_DEC_ZERO_REF_VAL" & txtDEC_Pot_ZeroRef.Text & vbCr
+    End Sub
+
+    Private Sub cmdGetHA_Pot_ScaleFactor_Click(sender As Object, e As EventArgs) Handles cmdGetHA_Pot_ScaleFactor.Click
+        'MSComm1.Output = "*SEND_HA_SCALE_FACTOR" & vbCr
+    End Sub
+
+    Private Sub cmdSetHA_Pot_ScaleFactor_Click(sender As Object, e As EventArgs) Handles cmdSetHA_Pot_ScaleFactor.Click
+        If txtHA_Pot_ScaleFactor.Text = "" Then Exit Sub
+        If Val(txtHA_Pot_ScaleFactor.Text) = 0 Then Exit Sub
+        'MSComm1.Output = "*SET_HA_SCALE_FACTOR" & txtHA_Pot_ScaleFactor.Text & vbCr
+    End Sub
+
+    Private Sub cmdGetDEC_Pot_ScaleFactor_Click(sender As Object, e As EventArgs) Handles cmdGetDEC_Pot_ScaleFactor.Click
+        'MSComm1.Output = "*SEND_DEC_SCALE_FACTOR" & vbCr
+    End Sub
+
+    Private Sub cmdSetDEC_Pot_ScaleFactor_Click(sender As Object, e As EventArgs) Handles cmdSetDEC_Pot_ScaleFactor.Click
+        If txtDEC_Pot_ScaleFactor.Text = "" Then Exit Sub
+        If Val(txtDEC_Pot_ScaleFactor.Text) = 0 Then Exit Sub
+        'MSComm1.Output = "*SET_DEC_SCALE_FACTOR" & txtDEC_Pot_ScaleFactor.Text & vbCr
+    End Sub
+
+    Private Sub cmdSync_HA_Pot_Click(sender As Object, e As EventArgs) Handles cmdSync_HA_Pot.Click
+        'MSComm1.Output = "*SAVE_HA_POT_ZERO_REF" & vbCr
+    End Sub
+
+    Private Sub cmdSync_DEC_Pot_Click(sender As Object, e As EventArgs) Handles cmdSync_DEC_Pot.Click
+        'MSComm1.Output = "*SAVE_DEC_POT_ZERO_REF" & vbCr
+    End Sub
+
+    Private Sub cmdFind_HA_Opto_Click(sender As Object, e As EventArgs) Handles cmdFind_HA_Opto.Click
+        'MSComm1.Output = "*FIND_HA_OPTO" & vbCr
+    End Sub
+
+    Private Sub cmdFind_DEC_Opto_Click(sender As Object, e As EventArgs) Handles cmdFind_DEC_Opto.Click
+        'MSComm1.Output = "*FIND_DEC_OPTO" & vbCr
+    End Sub
 End Class
