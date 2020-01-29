@@ -11,5 +11,5 @@ The situation at the OC61 observatory required an extension of the standard ASCO
     standalone application, the design has to  be able share that serial port. The dome driver will
     own the serial port and the dome manager will use the ASCOM local server template to allow 
     both the scope control software, ACP, and a standalone app to connect to that driver.
-    
+  - The code for the existing Peripheral Controller VB6 app in included in the repo, along with the firmware of the controller itself.     
     

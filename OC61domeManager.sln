@@ -9,6 +9,8 @@ Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "OC61domeDriver2", "OC61dome
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "OC61testForm2", "OC61testForm2\OC61testForm2.vbproj", "{D1747C8D-F0CC-4B20-A0E4-517EBA497FA4}"
 EndProject
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Peripheral_Controller", "Peripheral_Controller\Peripheral_Controller.vbproj", "{3D758B56-F64B-44D5-A2BF-631089A059FF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,12 @@ Global
 		{D1747C8D-F0CC-4B20-A0E4-517EBA497FA4}.Release|Any CPU.ActiveCfg = Release|x86
 		{D1747C8D-F0CC-4B20-A0E4-517EBA497FA4}.Release|x86.ActiveCfg = Release|x86
 		{D1747C8D-F0CC-4B20-A0E4-517EBA497FA4}.Release|x86.Build.0 = Release|x86
+		{3D758B56-F64B-44D5-A2BF-631089A059FF}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{3D758B56-F64B-44D5-A2BF-631089A059FF}.Debug|x86.ActiveCfg = Debug|x86
+		{3D758B56-F64B-44D5-A2BF-631089A059FF}.Debug|x86.Build.0 = Debug|x86
+		{3D758B56-F64B-44D5-A2BF-631089A059FF}.Release|Any CPU.ActiveCfg = Release|x86
+		{3D758B56-F64B-44D5-A2BF-631089A059FF}.Release|x86.ActiveCfg = Release|x86
+		{3D758B56-F64B-44D5-A2BF-631089A059FF}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

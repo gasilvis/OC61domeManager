@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using ASCOM;
+using ASCOM.Utilities;
 
 namespace ASCOM.OC61domeServer2
 {
@@ -66,6 +67,8 @@ namespace ASCOM.OC61domeServer2
         /// </summary>
         public static int connections { get { return s_z; } set { s_z = value; } }
 
+        public static string comPort { get;  set;}
+
         /// <summary>
         /// Example of a shared SendMessage method, the lock
         /// prevents different drivers tripping over one another.
@@ -101,7 +104,22 @@ namespace ASCOM.OC61domeServer2
                     if (value)
                     {
                         if (s_z == 0)
+                        {
+                            // set up the serial port
+                            SharedSerial.PortName = comPort;
+                            SharedSerial.Speed = SerialSpeed.ps9600;
+                            SharedSerial.ReceiveTimeout = 1;
+                            SharedSerial.DataBits = 8;
+                            SharedSerial.StopBits = SerialStopBits.One;
+                            SharedSerial.Parity = SerialParity.None;
+                            SharedSerial.Handshake = SerialHandshake.None;
+                            SharedSerial.RTSEnable = false;
+                            SharedSerial.DTREnable = false;
+                            // TODO: make sure this is the Peripheral Controller that is connected.
+                            //     send a * and get a * back
+
                             SharedSerial.Connected = true;
+                        }
                         s_z++;
                     }
                     else

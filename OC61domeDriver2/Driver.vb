@@ -36,6 +36,7 @@ Imports ASCOM
 Imports ASCOM.Astrometry
 Imports ASCOM.Astrometry.AstroUtils
 Imports ASCOM.DeviceInterface
+Imports ASCOM.OC61domeServer2
 Imports ASCOM.Utilities
 
 Imports System
@@ -46,8 +47,13 @@ Imports System.Runtime.InteropServices
 Imports System.Text
 
 <Guid("5ff4c119-d85c-49ac-8fc6-00aa50af7c95")>
+<ProgId(“ASCOM.OC61domeServer2.Dome”)>
+<ServedClassName(“OC61 Dome Server”)>
 <ClassInterface(ClassInterfaceType.None)>
 Public Class Dome
+    '==================================
+    Inherits ReferenceCountedObjectBase
+    '==================================
 
     ' The Guid attribute sets the CLSID for ASCOM.OC61domeDriver2.Dome
     ' The ClassInterface/None addribute prevents an empty interface called
@@ -61,8 +67,8 @@ Public Class Dome
     '
     ' Driver ID and descriptive string that shows in the Chooser
     '
-    Friend Shared driverID As String = "ASCOM.OC61domeDriver2.Dome"
-    Private Shared driverDescription As String = "OC61domeDriver2 Dome"
+    'Friend Shared driverID As String = "ASCOM.OC61domeServer2.Dome"
+    'Private Shared driverDescription As String = "OC61domeServer2 Dome"
 
     Friend Shared comPortProfileName As String = "COM Port" 'Constants used for Profile persistence
     Friend Shared traceStateProfileName As String = "Trace Level"
@@ -85,9 +91,9 @@ Public Class Dome
     ' Constructor - Must be public for COM registration!
     '
     Public Sub New()
-
+        DriverID = Marshal.GenerateProgIdForType(Me.GetType())
         ReadProfile() ' Read device configuration from the ASCOM Profile store
-        TL = New TraceLogger("", "OC61domeDriver2")
+        TL = New TraceLogger("", "OC61domeServer2")
         TL.Enabled = traceState
         TL.LogMessage("Dome", "Starting initialisation")
 
@@ -181,14 +187,18 @@ Public Class Dome
 
             If value Then
                 connectedState = True
-                TL.LogMessage("Connected Set", "Connecting to port " + comPort)
-                ' TODO connect to the device
-                childDome.Connected = True ' TODO throw error on fail
+                TL.LogMessage("Connected Set", "Connecting to port " + comPort + " and " + childDomeId)
+                childDome.Connected = True
+                ' TODO throw error on fail
+                SharedResources.comPort = comPort ' TODO is comport set?
+                SharedResources.Connected = True
+                ' TODO throw error on fail
             Else
                 connectedState = False
                 TL.LogMessage("Connected Set", "Disconnecting from port " + comPort)
                 ' TODO disconnect from the device
                 childDome.Connected = False
+                SharedResources.Connected = False
             End If
         End Set
     End Property
@@ -255,6 +265,7 @@ Public Class Dome
 #Region "IDome Implementation"
 
     Private domeShutterState As Boolean = False ' Variable to hold the open/closed status of the shutter, true = Open
+    Private DriverID As String
 
     Public Sub AbortSlew() Implements IDomeV2.AbortSlew
         ' This is a mandatory parameter but we have no action to take in this simple driver
@@ -474,44 +485,23 @@ Public Class Dome
     ' here are some useful properties and methods that can be used as required
     ' to help with
 
-#Region "ASCOM Registration"
-
-    Private Shared Sub RegUnregASCOM(ByVal bRegister As Boolean)
-
-        Using P As New Profile() With {.DeviceType = "Dome"}
-            If bRegister Then
-                P.Register(driverID, driverDescription)
-            Else
-                P.Unregister(driverID)
-            End If
-        End Using
-
-    End Sub
-
-    <ComRegisterFunction()>
-    Public Shared Sub RegisterASCOM(ByVal T As Type)
-
-        RegUnregASCOM(True)
-
-    End Sub
-
-    <ComUnregisterFunction()>
-    Public Shared Sub UnregisterASCOM(ByVal T As Type)
-
-        RegUnregASCOM(False)
-
-    End Sub
-
-#End Region
 
     ''' <summary>
     ''' Returns true if there is a valid connection to the driver hardware
     ''' </summary>
     Private ReadOnly Property IsConnected As Boolean
         Get
-            ' TODO check that the driver hardware connection exists and is connected to the hardware
+            ' Check that the driver hardware connection exists and is connected to the hardware
             ' childDome and the serial port need to be up.
+            connectedState = True ' the hope
+            ' is the childDome connected?
             If Not childDome.Connected Then
+                TL.LogMessage("IsConnected", "childDome not connected.")
+                connectedState = False
+            End If
+            ' is the serial port to the periperal controller connected?
+            If Not SharedResources.Connected Then
+                TL.LogMessage("IsConnected", "Serial port to Peripheral Controller not collected.")
                 connectedState = False
             End If
 
