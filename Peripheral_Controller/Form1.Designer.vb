@@ -190,6 +190,7 @@ Partial Class Form1
         '
         'List1
         '
+        Me.List1.Font = New System.Drawing.Font("Microsoft Sans Serif", 7.8!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.List1.Location = New System.Drawing.Point(22, 143)
         Me.List1.Multiline = True
         Me.List1.Name = "List1"
