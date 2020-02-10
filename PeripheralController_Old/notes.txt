@@ -1,0 +1,87 @@
+
+ strings coming from PC  =======================================================
+SendHardwareDetectedResponse()    
+    strcpy(TxBuffer, "$\r");  
+                            
+SendMirrorCoverStatusToPC()
+        strcpy(TxBuffer, "MIRROR COVER FAILED TO SHUT: COVER OPEN\r");               
+        strcpy(TxBuffer, "MIRROR COVER FAILED TO SHUT: COVER PARTLY OPEN\r"); 
+        strcpy(TxBuffer, "MIRROR COVER FAILED TO OPEN: COVER SHUT\r"); 
+        strcpy(TxBuffer, "MIRROR COVER FAILED TO OPEN: COVER PARTLY OPEN\r"); 
+      strcpy(TxBuffer, "MIRROR COVER SENSOR ERROR\r"); 
+      strcpy(TxBuffer, "SHUT\r"); 
+      strcpy(TxBuffer, "OPEN\r"); 
+      strcpy(TxBuffer, "PARTLY OPEN\r"); 
+
+SendFlipMirrorStatusToPC()      
+      strcpy(TxBuffer, "FLIP MIRROR DRIVE ERROR\r"); 
+      strcpy(TxBuffer, "MIRROR IN\r"); 
+      strcpy(TxBuffer, "MIRROR OUT\r"); 
+
+Send_HorizonSenseStatus_ToPC()
+      strcpy(TxBuffer, "HORIZON OK\r"); 
+      strcpy(TxBuffer, "AT HORIZON LIMIT\r"); 
+
+Send_HA_ZeroFoundMessage()
+    strcpy(TxBuffer, "HA_ZERO\r");         
+
+Send_DEC_ZeroFoundMessage()
+    strcpy(TxBuffer, "DEC_ZERO\r");        
+
+SendPositionsToPC()
+    strcpyf(TxBuffer, "HA");
+    strcat(TxBuffer, HA_String);
+    strcatf(TxBuffer, " DEC");
+    strcat(TxBuffer, DEC_String);
+    strcatf(TxBuffer, "\r");   
+
+SendHA_PotSlippageMessageToPC()
+    strcpyf(TxBuffer, "HA_POT_SLIPPAGE_ERROR\r");
+
+SendDEC_PotSlippageMessageToPC()
+    strcpyf(TxBuffer, "DEC_POT_SLIPPAGE_ERROR\r");
+
+void Send_ADC_Vals_ToPC()
+    strcpyf(TxBuffer, "HA_ABS: "); 
+    ltoa(HA_Pot_AvgVal, TextString);
+    strcat(TxBuffer, TextString);   
+    strcatf(TxBuffer, " HA_REL: "); 
+    ltoa(HA_RelativeVal, TextString);
+    strcat(TxBuffer, TextString); 
+    
+    strcatf(TxBuffer, " DEC_ABS: ");
+    ltoa(DEC_Pot_AvgVal, TextString);
+    strcat(TxBuffer, TextString);   
+    strcatf(TxBuffer, " DEC_REL: "); 
+    ltoa(DEC_RelativeVal, TextString);
+    strcat(TxBuffer, TextString); 
+    strcatf(TxBuffer, "\r");   
+
+Send_HA_Zero_Ref_Val()
+    strcpyf(TxBuffer, "HA ZERO REF VAL: "); 
+    ftoa (ZeroReference_Copy, 0, TextString);
+    strcat(TxBuffer, TextString);   
+    strcatf(TxBuffer, "\r");   
+
+Send_DEC_Zero_Ref_Val()
+    strcpyf(TxBuffer, "DEC ZERO REF VAL: "); 
+    ftoa (ZeroReference_Copy, 0, TextString);
+    strcat(TxBuffer, TextString);   
+    strcatf(TxBuffer, "\r");   
+
+Send_HA_ScaleFactorToPC()
+    strcpyf(TxBuffer, "HA SCALE FACTOR VAL: "); 
+    ftoa (ScaleFactor_Copy, 3, TextString);
+    strcat(TxBuffer, TextString);   
+    strcatf(TxBuffer, "\r");   
+
+strncmpf(CommandString, "SEND_DEC_SCALE_FACTOR", StrLength);  
+Send_DEC_ScaleFactorToPC()
+    strcpyf(TxBuffer, "DEC SCALE FACTOR VAL: "); 
+    ftoa (ScaleFactor_Copy, 3, TextString);
+    strcat(TxBuffer, TextString);   
+    strcatf(TxBuffer, "\r");   
+
+
+
+============================================================

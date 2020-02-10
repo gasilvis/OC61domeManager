@@ -171,6 +171,7 @@ Public Class Dome
         ' it's a good idea to put all the low level communication with the device here,
         ' then all communication calls this function
         ' you need something to ensure that only one command is in progress at a time
+        SharedResources.SendMessage(Command) 'TODO a function returning a string
         Throw New MethodNotImplementedException("CommandString")
     End Function
 
