@@ -161,13 +161,13 @@ void PulseFlipMirrorStartLine();
 // External Interrupt 4 service routine
 interrupt[EXT_INT4] void ext_int4_isr(void)
 {
-	if (SearchingForHA_Opto)
+	if (SearchingForHA_Opto) // set by Find HA Opto cmd
 	{
-		HA_ZeroFound = true;
-		SearchingForHA_Opto = false;
+		HA_ZeroFound = true; // main() will signal find
+		SearchingForHA_Opto = false; // clear
 	}
 
-	HA_ChopperFound = true;
+	HA_ChopperFound = true; // main() will check for slippage
 }
 
 //.............................................................................
@@ -175,13 +175,13 @@ interrupt[EXT_INT4] void ext_int4_isr(void)
 // External Interrupt 5 service routine
 interrupt[EXT_INT5] void ext_int5_isr(void)
 {
-	if (SearchingForDEC_Opto)
+	if (SearchingForDEC_Opto) // set by Find Dec Opto cmd
 	{
-		DEC_ZeroFound = true;
-		SearchingForDEC_Opto = false;
+		DEC_ZeroFound = true; // main() will signl find
+		SearchingForDEC_Opto = false; // clear
 	}
 
-	DEC_ChopperFound = true;
+	DEC_ChopperFound = true; // main() will check for slippage
 }
 
 //.............................................................................
@@ -194,11 +194,11 @@ interrupt[USART0_RXC] void usart0_rx_isr(void)
 
 	RxData = UDR0;
 
-	if (RxData == 10) return;     //Ignor any line fed character
-	if (RxData == 0) return;      //Ignor any null character
-	if (RxData == ' ') return;    //Ignor any space character      
+	if (RxData == 10) return;     //Ignore any line fed character
+	if (RxData == 0) return;      //Ignore any null character
+	if (RxData == ' ') return;    //Ignore any space character      
 
-	if (RxData == '*')
+	if (RxData == '*') // cmd prefix; reset for receive
 	{
 		CommandStringIndex = 0;
 		CommandString[0] = 0;
@@ -207,27 +207,24 @@ interrupt[USART0_RXC] void usart0_rx_isr(void)
 		return;
 	}
 
-
 	RxData = toupper(RxData);    //Convert to upper case 
 
-
-	if (RxData == 13)
+	if (RxData == 13) // cmd terminator
 	{
 		CommandStringReady = true;
-		CommandStringIndex = 0;
-		ParameterStringIndex = 0;
+		CommandStringIndex = 0; // reset for next
+		ParameterStringIndex = 0; // "
 		return;
 	}
 
-
+	// build strings
+	// if its numeric or decimal or neg sign, it is parameter
 	if ((RxData >= '0') && (RxData <= '9'))
 	{
 		ParameterString[ParameterStringIndex++] = RxData;
 		ParameterString[ParameterStringIndex] = 0;
 		return;
 	}
-
-
 	if ((RxData == '.') || (RxData == '-'))
 	{
 		ParameterString[ParameterStringIndex++] = RxData;
@@ -235,8 +232,7 @@ interrupt[USART0_RXC] void usart0_rx_isr(void)
 		return;
 	}
 
-
-
+	// else, its part of the command
 	{
 		CommandString[CommandStringIndex++] = RxData;
 		CommandString[CommandStringIndex] = 0;
@@ -256,9 +252,7 @@ interrupt[USART0_TXC] void usart0_tx_isr(void)
 	{
 		UDR0 = Character;
 	}
-
 	else
-
 	{
 		Transmitting = false;
 	}
@@ -270,22 +264,20 @@ interrupt[USART0_TXC] void usart0_tx_isr(void)
 // Timer 0 overflow interrupt service routine
 interrupt[TIM0_OVF] void timer0_ovf_isr(void)
 {
-
+	// not used
 }
 
 //.............................................................................
 
-//Timer0 is set up as a 1ms timer
+//Timer1 is set up as a 1ms timer
 //Every 1ms we read the HA & DEC pots and every 200ms we average the readings and output the results as HA & DEC angles
-
 // Timer1 overflow interrupt service routine
 interrupt[TIM1_OVF] void timer1_ovf_isr(void)
 {
 	TCNT1H = 0xFE;
 	TCNT1L = 0x32;      //Set timer1 for a 1 ms timebase
 
-
-	TimeToReadPositionPots = true;
+	TimeToReadPositionPots = true; // main(0) will read
 
 	if (++Timer1Counter > 300)
 	{
@@ -299,14 +291,12 @@ interrupt[TIM1_OVF] void timer1_ovf_isr(void)
 // Timer2 overflow interrupt service routine
 interrupt[TIM2_OVF] void timer2_ovf_isr(void)
 {
-
-
+   // not used
 }
 
 //.............................................................................
 
 //Timer3 is used as a 1 second timer. It is used as a general purpose timer for anything requiring a 1 second or multiple of 1 second timeout
-
 // Timer3 overflow interrupt service routine
 interrupt[TIM3_OVF] void timer3_ovf_isr(void)
 {
@@ -328,7 +318,6 @@ interrupt[TIM3_OVF] void timer3_ovf_isr(void)
 			MirrorCoverOpening = false;
 			if (MirrorCoverOpenSenseSwitch != MirrorCoverOpen) MirrorCoverFailedToOpen = true;
 		}
-
 
 
 	if (++SecondsCounter > 3600)
@@ -498,9 +487,9 @@ void main(void)
 	EIFR = 0x30;
 
 	// Timer(s)/Counter(s) Interrupt(s) initialization
-	TIMSK = 0x45;
+	TIMSK = 0x45; // timer 0, 1 and 2 overflow interrrupts  enabled
 
-	ETIMSK = 0x04;
+	ETIMSK = 0x04; // timer 3 overflow interrupt enabled
 
 	// USART0 initialization
 	// Communication Parameters: 8 Data, 1 Stop, No Parity
@@ -564,10 +553,10 @@ void main(void)
 	#asm("sei")
 
 
-		if (TestByte1_EEPROM != 0x55)    //Initialize these EEPROM variables if not already initialized
-		{
-			HA_Pot_ZeroReference_EEPROM = 512;
-		}
+	if (TestByte1_EEPROM != 0x55)    //Initialize these EEPROM variables if not already initialized
+	{
+		HA_Pot_ZeroReference_EEPROM = 512;
+	}
 
 	if (TestByte2_EEPROM != 0x55)    //Initialize these EEPROM variables if not already initialized
 	{
@@ -673,19 +662,22 @@ void main(void)
 			}
 		}
 
-		if (TimeToReadPositionPots)
+		if (TimeToReadPositionPots) // every 1 ms
 		{
 			TimeToReadPositionPots = false;
 			ReadRA_And_DEC_PositionPots();
 		}
 
-		if (TimeToSendPositions)
+		if (TimeToSendPositions) // every 300 ms
 		{
-			TimeToSendPositions = false;
-			if ((PositionSendingEnabled) && (PC_CommsLinkEstablished)) SendPositionsToPC();
+			TimeToSendPositions = false; // clear
+			if ((PositionSendingEnabled) && (PC_CommsLinkEstablished)) 
+				SendPositionsToPC();
+
 			if (HorizonSenseStatusBit == LimitExceeded)
 			{
 				DisplayHorizonSenseLimitOnLCD();
+				// no warning to serial port! You have to ask for status
 			}
 			else
 			{
@@ -697,7 +689,8 @@ void main(void)
 		if (PositionSendRequested)
 		{
 			PositionSendRequested = false;
-			if (PositionSendingEnabled == false) SendPositionsToPC();
+			if (PositionSendingEnabled == false) // send only if not being sent automatically
+				SendPositionsToPC();
 		}
 
 		if (TimeToResetDisplay)

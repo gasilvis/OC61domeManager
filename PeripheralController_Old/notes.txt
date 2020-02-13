@@ -22,12 +22,6 @@ Send_HorizonSenseStatus_ToPC()
       strcpy(TxBuffer, "HORIZON OK\r"); 
       strcpy(TxBuffer, "AT HORIZON LIMIT\r"); 
 
-Send_HA_ZeroFoundMessage()
-    strcpy(TxBuffer, "HA_ZERO\r");         
-
-Send_DEC_ZeroFoundMessage()
-    strcpy(TxBuffer, "DEC_ZERO\r");        
-
 SendPositionsToPC()
     strcpyf(TxBuffer, "HA");
     strcat(TxBuffer, HA_String);
@@ -35,11 +29,22 @@ SendPositionsToPC()
     strcat(TxBuffer, DEC_String);
     strcatf(TxBuffer, "\r");   
 
+Send_HA_ZeroFoundMessage()
+    strcpy(TxBuffer, "HA_ZERO\r");         
+ -->after find request, when opto found
+ 
+Send_DEC_ZeroFoundMessage()
+    strcpy(TxBuffer, "DEC_ZERO\r");        
+ -->sfter find request, when opto found
+
 SendHA_PotSlippageMessageToPC()
     strcpyf(TxBuffer, "HA_POT_SLIPPAGE_ERROR\r");
+ -->Could happen at any ha opto detection
 
 SendDEC_PotSlippageMessageToPC()
     strcpyf(TxBuffer, "DEC_POT_SLIPPAGE_ERROR\r");
+ -->could happen at any dec opto detection
+
 
 void Send_ADC_Vals_ToPC()
     strcpyf(TxBuffer, "HA_ABS: "); 
