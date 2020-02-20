@@ -46,7 +46,8 @@ Imports System.Globalization
 Imports System.Runtime.InteropServices
 Imports System.Text
 
-<Guid("5ff4c119-d85c-49ac-8fc6-00aa50af7c95")>
+'<Guid("5ff4c119-d85c-49ac-8fc6-00aa50af7c95")>
+<Guid("122CDD7A-7F74-4272-8721-BA809ACF34C6")>
 <ProgId(“ASCOM.OC61domeServer2.Dome”)>
 <ServedClassName(“OC61 Dome Server”)>
 <ClassInterface(ClassInterfaceType.None)>
@@ -55,9 +56,9 @@ Public Class Dome
     Inherits ReferenceCountedObjectBase
     '==================================
 
-    ' The Guid attribute sets the CLSID for ASCOM.OC61domeDriver2.Dome
+    ' The Guid attribute sets the CLSID for ASCOM.OC61domeServer2.Dome
     ' The ClassInterface/None addribute prevents an empty interface called
-    ' _OC61domeDriver2 from being created and used as the [default] interface
+    ' _OC61domeServer2 from being created and used as the [default] interface
 
     ' TODO Replace the not implemented exceptions with code to implement the function or
     ' throw the appropriate ASCOM exception.
@@ -86,6 +87,7 @@ Public Class Dome
     Private astroUtilities As AstroUtils ' Private variable to hold an AstroUtils object to provide the Range method
     Private TL As TraceLogger ' Private variable to hold the trace logger object (creates a diagnostic log file with information that you specify)
     Friend Shared childDome As ASCOM.DriverAccess.Dome
+    Friend Shared PCStatusUpdateTimer As System.Timers.Timer
 
     '
     ' Constructor - Must be public for COM registration!
@@ -93,8 +95,9 @@ Public Class Dome
     Public Sub New()
         DriverID = Marshal.GenerateProgIdForType(Me.GetType())
         ReadProfile() ' Read device configuration from the ASCOM Profile store
-        TL = New TraceLogger("", "OC61domeServer2")
-        TL.Enabled = traceState
+        TL = New TraceLogger("", "OC61domeServer2") With {
+            .Enabled = traceState
+        }
         TL.LogMessage("Dome", "Starting initialisation")
 
         connectedState = False ' Initialise connected to false
@@ -103,9 +106,19 @@ Public Class Dome
         childDome = New ASCOM.DriverAccess.Dome(childDomeId)
 
         'TODO: Implement your additional construction here
+        PCStatusUpdateTimer = New System.Timers.Timer()
+        AddHandler PCStatusUpdateTimer.Elapsed, AddressOf OnPCstatusUpdate
+        PCStatusUpdateTimer.Interval = 1000
+        PCStatusUpdateTimer.Enabled = False
 
 
         TL.LogMessage("Dome", "Completed initialisation")
+
+
+    End Sub
+
+    Public Sub OnPCstatusUpdate(ByVal sender As Object, ByVal e As System.Timers.ElapsedEventArgs)
+        ' runs every second
     End Sub
 
     '
@@ -148,21 +161,29 @@ Public Class Dome
         Throw New ActionNotImplementedException("Action " & ActionName & " is not supported by this driver")
     End Function
 
+    ' commands to be sent to the Peripheral Controller
+    Public Sub PCcommandBlind(ByVal Command As String)
+        CheckConnected("PCCommandBlind")
+        SharedResources.SendMessage(Command)
+    End Sub
+
     Public Sub CommandBlind(ByVal Command As String, Optional ByVal Raw As Boolean = False) Implements IDomeV2.CommandBlind
         CheckConnected("CommandBlind")
         ' Call CommandString and return as soon as it finishes
-        Me.CommandString(Command, Raw)
+        SharedResources.SendMessage(Command)
+        'Me.CommandString(Command, Raw)
         ' or
-        Throw New MethodNotImplementedException("CommandBlind")
+        'Throw New MethodNotImplementedException("CommandBlind")
     End Sub
 
     Public Function CommandBool(ByVal Command As String, Optional ByVal Raw As Boolean = False) As Boolean _
         Implements IDomeV2.CommandBool
         CheckConnected("CommandBool")
         Dim ret As String = CommandString(Command, Raw)
-        ' TODO decode the return string and return true or false
+        ' decode the return string and return true or false
+        Return "TRUE" = ret.ToUpper()
         ' or
-        Throw New MethodNotImplementedException("CommandBool")
+        'Throw New MethodNotImplementedException("CommandBool")
     End Function
 
     Public Function CommandString(ByVal Command As String, Optional ByVal Raw As Boolean = False) As String _
@@ -170,11 +191,14 @@ Public Class Dome
         CheckConnected("CommandString")
         ' it's a good idea to put all the low level communication with the device here,
         ' then all communication calls this function
+        Dim ret As String = childDome.CommandString(Command, Raw)
+        Return ret
         ' you need something to ensure that only one command is in progress at a time
-        SharedResources.SendMessage(Command) 'TODO a function returning a string
-        Throw New MethodNotImplementedException("CommandString")
+        ' or
+        'Throw New MethodNotImplementedException("CommandString")
     End Function
 
+    '// called by driver clients
     Public Property Connected() As Boolean Implements IDomeV2.Connected
         Get
             TL.LogMessage("Connected Get", IsConnected.ToString())
@@ -207,7 +231,7 @@ Public Class Dome
     Public ReadOnly Property Description As String Implements IDomeV2.Description
         Get
             ' this pattern seems to be needed to allow a public property to return a private field
-            Dim d As String = childDome.Description
+            Dim d As String = "Child dome: " & childDome.Description
             TL.LogMessage("Description Get", d)
             Return d
         End Get
@@ -259,13 +283,21 @@ Public Class Dome
         utilities = Nothing
         astroUtilities.Dispose()
         astroUtilities = Nothing
+        PCStatusUpdateTimer.Dispose()
     End Sub
 
 #End Region
 
 #Region "IDome Implementation"
+    Public Enum MirrorCoverStates
+        mirrorcoverOpen = 0
+        mirrorcoverClosed = 1
+        mirrorcoverPartial = 2
+        mirrorcoverError = 3
+    End Enum
 
-    Private domeShutterState As Boolean = False ' Variable to hold the open/closed status of the shutter, true = Open
+    Private domeShutterState As Integer = ShutterState.shutterClosed ' Variable to hold the open/closed status of the shutter
+    Private mirrorCoverState As Integer = MirrorCoverStates.mirrorcoverClosed
     Private DriverID As String
 
     Public Sub AbortSlew() Implements IDomeV2.AbortSlew
@@ -359,7 +391,7 @@ Public Class Dome
         Get
             'TL.LogMessage("CanSetShutter Get", True.ToString())
             'Return True
-            TL.LogMessage("CanSetShutter GetType", "Ask the child.")
+            TL.LogMessage("CanSetShutter GetType", "Ask the child.") ' I assume the MaxDome can do this
             Return childDome.CanSetShutter()
         End Get
     End Property
@@ -382,29 +414,11 @@ Public Class Dome
         End Get
     End Property
 
-    Public Sub CloseShutter() Implements IDomeV2.CloseShutter
-        'TL.LogMessage("CloseShutter", "Shutter has been closed")
-        'domeShutterState = False
-        ' TODO   close the mirror cover
-        TL.LogMessage("CloseShutter", "Ask the child.")
-        childDome.CloseShutter()
-        domeShutterState = childDome.ShutterStatus() = ShutterState.shutterOpen ' keep a copy?
-    End Sub
-
     Public Sub FindHome() Implements IDomeV2.FindHome
         'TL.LogMessage("FindHome", "Not implemented")
         'Throw New ASCOM.MethodNotImplementedException("FindHome")
         TL.LogMessage("FindHome", "Ask the child.")
         childDome.FindHome()
-    End Sub
-
-    Public Sub OpenShutter() Implements IDomeV2.OpenShutter
-        'TL.LogMessage("OpenShutter", "Shutter has been opened")
-        'domeShutterState = True
-        TL.LogMessage("OpenShutter", "Ask the child.")
-        childDome.OpenShutter()
-        domeShutterState = childDome.ShutterStatus() = ShutterState.shutterOpen ' keep a copy?
-        ' TODO  open the mirror cover
     End Sub
 
     Public Sub Park() Implements IDomeV2.Park
@@ -421,17 +435,61 @@ Public Class Dome
         childDome.SetPark()
     End Sub
 
+    Public Sub CloseShutter() Implements IDomeV2.CloseShutter
+        TL.LogMessage("CloseShutter", "Shutter close requested")
+        Select Case domeShutterState
+            Case ShutterState.shutterOpen, ShutterState.shutterOpening, ShutterState.shutterError
+                domeShutterState = ShutterState.shutterClosing
+                'TODO send command to shut mirror
+            Case ShutterState.shutterClosed, ShutterState.shutterClosing
+                ' do nothing
+        End Select
+    End Sub
+
+    Public Sub OpenShutter() Implements IDomeV2.OpenShutter
+        TL.LogMessage("OpenShutter", "Shutter open requested")
+        Select Case domeShutterState
+            Case ShutterState.shutterClosed, ShutterState.shutterClosing, ShutterState.shutterError
+                domeShutterState = ShutterState.shutterOpening
+                childDome.OpenShutter()
+            Case ShutterState.shutterOpen, ShutterState.shutterOpening
+                ' do nothing
+        End Select
+    End Sub
+
     Public ReadOnly Property ShutterStatus() As ShutterState Implements IDomeV2.ShutterStatus
         Get
-            TL.LogMessage("ShutterStatus Get", "Ask the child.")
-            Return childDome.ShutterStatus()
-            'If (domeShutterState) Then
-            ' TL.LogMessage("ShutterStatus", ShutterState.shutterOpen.ToString())
-            'Return ShutterState.shutterOpen
-            'Else
-            ' TL.LogMessage("ShutterStatus", ShutterState.shutterClosed.ToString())
-            'Return ShutterState.shutterClosed
-            'End If
+            Dim childdomeShutterState As ShutterState = childDome.ShutterStatus()
+
+            If childdomeShutterState = ShutterState.shutterOpen Then
+                Select Case domeShutterState
+                    Case ShutterState.shutterOpen
+                        ' we're in aggrement
+                    Case ShutterState.shutterOpening
+                        ' check the mirror cover
+                        Select Case mirrorCoverState
+                            Case MirrorCoverStates.mirrorcoverOpen
+                                domeShutterState = ShutterState.shutterOpen ' done opening
+                            Case MirrorCoverStates.mirrorcoverClosed
+                                'TODO issue command to open mirror cover
+                            Case MirrorCoverStates.mirrorcoverPartial
+                                ' do nothing for now; it is opening
+                            Case MirrorCoverStates.mirrorcoverError
+                                TL.LogMessage("Mirror Cover", "reporting an error:")
+                                domeShutterState = ShutterState.shutterError
+                        End Select ' mirrorCoverState
+                    Case ShutterState.shutterClosed, ShutterState.shutterClosing
+                        TL.LogMessage("Shutter state confusion", "child reports open when local driver thinks its Shutter is closed/closing")
+                        domeShutterState = ShutterState.shutterError
+                    Case ShutterState.shutterError
+                        ' let it stand as error
+                End Select ' domeShutterState
+            Else ' opening, closing, closed, error
+                domeShutterState = childdomeShutterState ' child state is our state
+            End If
+
+            Return domeShutterState
+
         End Get
     End Property
 
@@ -494,7 +552,7 @@ Public Class Dome
         Get
             ' Check that the driver hardware connection exists and is connected to the hardware
             ' childDome and the serial port need to be up.
-            connectedState = True ' the hope
+            connectedState = True ' the hope, then check the two interfaces
             ' is the childDome connected?
             If Not childDome.Connected Then
                 TL.LogMessage("IsConnected", "childDome not connected.")

@@ -168,6 +168,6 @@
 
     Private Sub sendPCcmd(cmd As String)
         List1.AppendText("send: " & cmd & vbLf) ' show what we are sending to the PC
-        driver.CommandBlind(cmd, False) ' send it to the driver blind: don't wait for response
+        Call driver.CommandBlind(cmd, False) ' send it to the driver blind: don't wait for response
     End Sub
 End Class

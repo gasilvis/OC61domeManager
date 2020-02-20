@@ -46,6 +46,9 @@ SendDEC_PotSlippageMessageToPC()
  -->could happen at any dec opto detection
 
 
+
+
+
 void Send_ADC_Vals_ToPC()
     strcpyf(TxBuffer, "HA_ABS: "); 
     ltoa(HA_Pot_AvgVal, TextString);
@@ -61,6 +64,8 @@ void Send_ADC_Vals_ToPC()
     ltoa(DEC_RelativeVal, TextString);
     strcat(TxBuffer, TextString); 
     strcatf(TxBuffer, "\r");   
+
+
 
 Send_HA_Zero_Ref_Val()
     strcpyf(TxBuffer, "HA ZERO REF VAL: "); 

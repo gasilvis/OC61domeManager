@@ -9,7 +9,7 @@
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ASCOM.OC61domeServer2</RootNamespace>
-    <AssemblyName>ASCOM.OC61domeServer2.Server</AssemblyName>
+    <AssemblyName>ASCOM.OC61domeServer2</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileUpgradeFlags>
     </FileUpgradeFlags>

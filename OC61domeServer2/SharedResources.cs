@@ -83,7 +83,7 @@ namespace ASCOM.OC61domeServer2
             {
                 SharedSerial.Transmit(message);
                 // TODO replace this with your requirements
-                return SharedSerial.ReceiveTerminated("#");
+                return ""; // blind send    SharedSerial.ReceiveTerminated("#");
             }
         }
 
