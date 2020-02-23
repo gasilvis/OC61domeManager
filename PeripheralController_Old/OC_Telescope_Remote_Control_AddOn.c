@@ -655,7 +655,7 @@ void main(void)
 		{
 			DEC_ZeroFound = false;
 			Send_DEC_ZeroFoundMessage();
-			if (SaveNextDEC_ZeroRef == true)
+			if (SaveNextDEC_ZeroRef == true)    // this is dead code. If here then you would have already gone through CheckForSlippageOn_DEC_Pot which does this test.
 			{
 				SaveNextDEC_ZeroRef = false;
 				Set_DEC_ZeroReference_Val(DEC_Pot_AvgVal);

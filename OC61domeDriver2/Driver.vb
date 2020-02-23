@@ -162,15 +162,16 @@ Public Class Dome
     End Function
 
     ' commands to be sent to the Peripheral Controller
-    Public Sub PCcommandBlind(ByVal Command As String)
-        CheckConnected("PCCommandBlind")
-        SharedResources.SendMessage(Command)
-    End Sub
+    'Public Sub PCcommandBlind(ByVal Command As String)
+    '   CheckConnected("PCCommandBlind")
+    '   SharedResources.SendMessage(Command)
+    'End Sub
 
+    ' CommandBlind taken over for use with the Peripheral Controller
     Public Sub CommandBlind(ByVal Command As String, Optional ByVal Raw As Boolean = False) Implements IDomeV2.CommandBlind
         CheckConnected("CommandBlind")
+        SharedResources.SendMessage(Command) ' to the PC
         ' Call CommandString and return as soon as it finishes
-        SharedResources.SendMessage(Command)
         'Me.CommandString(Command, Raw)
         ' or
         'Throw New MethodNotImplementedException("CommandBlind")

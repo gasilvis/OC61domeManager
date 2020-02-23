@@ -1,4 +1,4 @@
-﻿Public Class Form1
+﻿Public Class Form1 ' Peripheral Controller Emulator
 
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         ' load comport load: Show all available COM ports.
@@ -7,11 +7,40 @@
         Next
     End Sub
 
+    Private Sub ComboBox1_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ComboBox1.SelectedIndexChanged
+        If SerialPort1.IsOpen Then SerialPort1.Close()
+        SerialPort1.PortName = ComboBox1.SelectedItem
+        SerialPort1.BaudRate = 9600
+        SerialPort1.NewLine = vbCr
+        SerialPort1.ReadTimeout = 200
+        SerialPort1.ReceivedBytesThreshold = 4
+        SerialPort1.Open()
+        ' protocol:   send, no prefix, suffix \r
+        '           receive  prefix *, suffix \r
+        'SerialPort1.Write("Hello world" & vbCr)
+    End Sub
+
     Private Sub sendmsg(Message As String)
         ' send back 
         List1.AppendText("resp: " & Message & vbCrLf)
+        SerialPort1.Write(Message & vbCr)
     End Sub
 
+    Private Sub processCmd(cmd As String)
+        List1.AppendText("cmd: " & cmd & vbCrLf)
+    End Sub
+
+    Private Sub SerialPort1_DataReceived(sender As Object, e As IO.Ports.SerialDataReceivedEventArgs) Handles SerialPort1.DataReceived
+        Dim indata As String
+        Try
+            indata = SerialPort1.ReadLine() ' waits here for full line, ending in \r
+            Me.Invoke(Sub() processCmd(indata)) ' because we are in a thread
+        Catch
+        End Try
+    End Sub
+
+
+#Region "button code"
     Private Sub Label2_Click(sender As Object, e As EventArgs) Handles Label2.Click
         sendmsg("MIRROR COVER FAILED TO SHUT: COVER OPEN")
     End Sub
@@ -71,4 +100,6 @@
     Private Sub Label17_Click(sender As Object, e As EventArgs) Handles Label17.Click
         sendmsg("DEC_POT_SLIPPAGE_ERROR")
     End Sub
+
+#End Region
 End Class

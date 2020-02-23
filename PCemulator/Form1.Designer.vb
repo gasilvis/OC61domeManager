@@ -275,6 +275,9 @@ Partial Class Form1
         Me.Label12.TabIndex = 7
         Me.Label12.Text = "Dec"
         '
+        'SerialPort1
+        '
+        '
         'Label13
         '
         Me.Label13.AutoSize = True

@@ -1,24 +1,40 @@
-﻿Public Class Form1
+﻿Public Class Form1 ' Peripheral Controller Application
 
     Private driver As ASCOM.DriverAccess.Dome
 
-    ''' <summary>
+    Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        ' load comport load: Show all available COM ports for the serial connect option
+        For Each sp As String In My.Computer.Ports.SerialPortNames
+            ComboBox1.Items.Add(sp)
+        Next
+        ' connect to the upstream link
+        SerialPort2.PortName = "COM31"
+        SerialPort2.BaudRate = 9600
+        SerialPort2.NewLine = vbCr
+        SerialPort2.Open()
+    End Sub
+
+    Private Sub Form1_FormClosing(ByVal sender As System.Object, ByVal e As System.Windows.Forms.FormClosingEventArgs) Handles MyBase.FormClosing
+        If IsConnected Then
+            If TabControl1.SelectedIndex = 0 Then ' serial port
+                SerialPort1.Close()
+            Else ' driver
+                driver.Connected = False
+            End If
+        End If
+        SerialPort2.Close()
+        ' the settings are saved automatically when this application is closed.
+    End Sub
+
     ''' This event is where the driver is choosen. The device ID will be saved in the settings.
-    ''' </summary>
-    ''' <param name="sender">The source of the event.</param>
-    ''' <param name="e">The <see cref="System.EventArgs" /> instance containing the event data.</param>
     Private Sub buttonChoose_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles buttonChoose.Click
         My.Settings.DriverId = ASCOM.DriverAccess.Dome.Choose(My.Settings.DriverId)
         SetUIState()
     End Sub
 
-    ''' <summary>
     ''' Connects to the device to be tested.
-    ''' </summary>
-    ''' <param name="sender">The source of the event.</param>
-    ''' <param name="e">The <see cref="System.EventArgs" /> instance containing the event data.</param>
     Private Sub buttonConnect_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles buttonConnect.Click
-        If (IsConnected) Then
+        If IsConnected Then
             driver.Connected = False
         Else
             driver = New ASCOM.DriverAccess.Dome(My.Settings.DriverId)
@@ -27,37 +43,47 @@
         SetUIState()
     End Sub
 
-    Private Sub Form1_FormClosing(ByVal sender As System.Object, ByVal e As System.Windows.Forms.FormClosingEventArgs) Handles MyBase.FormClosing
-        If IsConnected Then
-            driver.Connected = False
-        End If
-        ' the settings are saved automatically when this application is closed.
+    Private Sub ComboBox1_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ComboBox1.SelectedIndexChanged
+        If SerialPort1.IsOpen Then SerialPort1.Close()
+        SerialPort1.PortName = ComboBox1.SelectedItem
+        SerialPort1.BaudRate = 9600
+        SerialPort1.NewLine = vbCr
+        SerialPort1.Open()
+        ' protocol: receive, no prefix, suffix \r
+        '           send  prefix *, suffix \r
+        'SerialPort1.Write("Hello world" & vbCr)
     End Sub
 
-    ''' <summary>
     ''' Sets the state of the UI depending on the device state
-    ''' </summary>
-    Private Sub SetUIState()
+    Private Sub SetUIState() ' only for Driver connection tab
         buttonConnect.Enabled = Not String.IsNullOrEmpty(My.Settings.DriverId)
         buttonChoose.Enabled = Not IsConnected
         buttonConnect.Text = IIf(IsConnected, "Disconnect", "Connect")
     End Sub
 
-    ''' <summary>
-    ''' Gets a value indicating whether this instance is connected.
-    ''' </summary>
-    ''' <value>
-    ''' 
-    ''' <c>true</c> if this instance is connected; otherwise, <c>false</c>.
-    ''' 
-    ''' </value>
+    Private Sub TabControl1_Selected(sender As Object, e As TabControlEventArgs) Handles TabControl1.Selected
+        If TabControl1.SelectedIndex = 0 Then ' serial port
+            driver.Connected = False
+        Else ' driver
+            SerialPort1.Close()
+        End If
+    End Sub
+
+
+    ''' Gets a value indicating whether this instance is connected via the driver or directly to the PC
     Private ReadOnly Property IsConnected() As Boolean
         Get
-            If Me.driver Is Nothing Then Return False
-            Return driver.Connected
+            If TabControl1.SelectedIndex = 0 Then ' serial port
+                If SerialPort1.IsOpen Then Return True
+                Return False
+            Else ' driver
+                If Me.driver Is Nothing Then Return False
+                Return driver.Connected
+            End If
         End Get
     End Property
 
+#Region "Button commands"
     Private Sub cmdOver_ride_HorizonSensor_Click(sender As Object, e As EventArgs) Handles cmdOver_ride_HorizonSensor.Click
         sendPCcmd("*OVER_RIDE_HORZ_LIMIT" & vbCr)
     End Sub
@@ -166,8 +192,45 @@
         sendPCcmd("*FIND_DEC_OPTO" & vbCr)
     End Sub
 
+#End Region
+
+    ' from UI buttons (or..) to PC
     Private Sub sendPCcmd(cmd As String)
-        List1.AppendText("send: " & cmd & vbLf) ' show what we are sending to the PC
-        Call driver.CommandBlind(cmd, False) ' send it to the driver blind: don't wait for response
+        List1.AppendText("toPC: " & cmd & vbLf) ' show what we are sending to the PC
+        If TabControl1.SelectedIndex = 0 Then ' serial port
+            SerialPort1.Write(cmd)
+        Else ' driver
+            Call driver.CommandBlind(cmd, False) ' send it to the driver blind: don't wait for response
+        End If
+    End Sub
+
+    ' Answer back from PC
+    Private Sub processPCmsg(cmd As String)
+        ' maintain states
+        ' augmented too
+        ' pass on to com31
+        SerialPort2.Write(cmd)
+        List1.AppendText("fromPC: " & cmd & vbCrLf) ' display msg to list
+    End Sub
+
+    ' data back from the PC
+    Private Sub SerialPort1_DataReceived(sender As Object, e As IO.Ports.SerialDataReceivedEventArgs) Handles SerialPort1.DataReceived
+        Dim indata As String
+        Try
+            indata = SerialPort1.ReadLine() ' waits here for full line, ending in \r
+            Me.Invoke(Sub() processPCmsg(indata)) ' because we are in a thread
+        Catch
+        End Try
+    End Sub
+
+    Private Sub SerialPort2_DataReceived(sender As Object, e As IO.Ports.SerialDataReceivedEventArgs) Handles SerialPort2.DataReceived
+        Dim indata As String
+        Try
+            indata = SerialPort1.ReadLine() ' waits here for full line, ending in \r
+            ' pass it on to the PC
+            Me.Invoke(Sub() sendPCcmd(indata)) ' because we are in a thread
+            ' TODO any special processing? Question answering?
+        Catch
+        End Try
     End Sub
 End Class
