@@ -7,11 +7,16 @@
         For Each sp As String In My.Computer.Ports.SerialPortNames
             ComboBox1.Items.Add(sp)
         Next
+        ComboBox1.SelectedIndex = ComboBox1.FindStringExact("COM21") ' or the real one
         ' connect to the upstream link
         SerialPort2.PortName = "COM31"
         SerialPort2.BaudRate = 9600
         SerialPort2.NewLine = vbCr
-        SerialPort2.Open()
+        Try
+            SerialPort2.Open()
+        Catch ex As System.UnauthorizedAccessException
+            TabControl1.SelectedIndex = 1 ' switch to driver mode since we are the upstream node
+        End Try
     End Sub
 
     Private Sub Form1_FormClosing(ByVal sender As System.Object, ByVal e As System.Windows.Forms.FormClosingEventArgs) Handles MyBase.FormClosing
@@ -48,7 +53,12 @@
         SerialPort1.PortName = ComboBox1.SelectedItem
         SerialPort1.BaudRate = 9600
         SerialPort1.NewLine = vbCr
-        SerialPort1.Open()
+        Try
+            SerialPort1.Open()
+        Catch ex As System.UnauthorizedAccessException
+            TabControl1.SelectedIndex = 1 ' switch to driver
+        End Try
+
         ' protocol: receive, no prefix, suffix \r
         '           send  prefix *, suffix \r
         'SerialPort1.Write("Hello world" & vbCr)
@@ -64,11 +74,12 @@
     Private Sub TabControl1_Selected(sender As Object, e As TabControlEventArgs) Handles TabControl1.Selected
         If TabControl1.SelectedIndex = 0 Then ' serial port
             driver.Connected = False
+            GroupBox8.Enabled = False
         Else ' driver
             SerialPort1.Close()
+            GroupBox8.Enabled = True
         End If
     End Sub
-
 
     ''' Gets a value indicating whether this instance is connected via the driver or directly to the PC
     Private ReadOnly Property IsConnected() As Boolean
@@ -93,15 +104,29 @@
     End Sub
 
     Private Sub cmdOpenMirrorCover_Click(sender As Object, e As EventArgs) Handles cmdOpenMirrorCover.Click
-        sendPCcmd("*OPEN_MIRROR_COVER" & vbCr)
+        If TabControl1.SelectedIndex = 0 Then ' serial port
+            sendPCcmd("*OPEN_MIRROR_COVER" & vbCr)
+        Else
+            driver.OpenShutter()
+        End If
     End Sub
 
     Private Sub cmdShutMirrorCover_Click(sender As Object, e As EventArgs) Handles cmdShutMirrorCover.Click
-        sendPCcmd("*CLOSE_MIRROR_COVER" & vbCr)
+        If TabControl1.SelectedIndex = 0 Then ' serial port
+            sendPCcmd("*CLOSE_MIRROR_COVER" & vbCr)
+        Else
+            driver.CloseShutter()
+        End If
     End Sub
 
     Private Sub cmdGetMirrorCoverStatus_Click(sender As Object, e As EventArgs) Handles cmdGetMirrorCoverStatus.Click
-        sendPCcmd("*MIRROR_COVER_STATUS" & vbCr)
+        If TabControl1.SelectedIndex = 0 Then ' serial port
+            sendPCcmd("*MIRROR_COVER_STATUS" & vbCr)
+        Else
+            Dim ret As Integer = driver.ShutterStatus()
+            ' TODO this needs to be a function, with a return   
+            List1.AppendText("shutter status is " & ret & vbCrLf)
+        End If
     End Sub
 
     Private Sub cmdClearList_Click(sender As Object, e As EventArgs) Handles cmdClearList.Click
@@ -204,13 +229,45 @@
         End If
     End Sub
 
+    Private Const dLAT As Double = -43.9856 '-43:59:08
+    Private Const dLONG As Double = 170.465 ' 170:27:54
+
     ' Answer back from PC
     Private Sub processPCmsg(cmd As String)
         ' maintain states
         ' augmented too
         ' pass on to com31
-        SerialPort2.Write(cmd)
         List1.AppendText("fromPC: " & cmd & vbCrLf) ' display msg to list
+        SerialPort2.Write(cmd & vbCr) ' send upstream 
+        ' secondary messages for upstream?
+        If (cmd.Substring(0, 2) = "HA" And cmd.Length = 14) Then ' eg  'HA+012 DEC-015'
+            ' pass on, but send a second, better, signal with Dec corrected and Alt and Az
+            Dim dHA As Double = CDbl(cmd.Substring(2, 4))
+            Dim dDec As Double = CDbl(cmd.Substring(10, 4))
+            If dDec > 90 Then dDec = 180 - dDec
+            If dDec < -90 Then dDec = -180 - dDec
+            Dim toRads As Double = Math.Asin(1) / 90 ' pi / 180
+            Dim DEC As Double = dDec * toRads
+            Dim LAT As Double = dLAT * toRads
+            Dim HA As Double = dHA * toRads
+            Dim ALT = Math.Asin(Math.Sin(DEC) * Math.Sin(LAT) + Math.Cos(DEC) * Math.Cos(LAT) * Math.Cos(HA))
+            Dim AZ = Math.Acos((Math.Sin(DEC) - Math.Sin(ALT) * Math.Sin(LAT)) / (Math.Cos(ALT) * Math.Cos(LAT)))
+            If Math.Sin(HA) < 0 Then AZ = (360 * toRads) - AZ ' this makes AZ==0 be South
+            Dim dALT As Double = ALT / toRads
+            Dim dAZ As Double = AZ / toRads
+            Dim s As String
+            s = String.Format("True HA{0:+000.0;-000.0}", dHA) ' to allow -000
+            cmd = s.Substring(0, s.Length - 2)
+            s = String.Format(" DEC{0:+000.0;-000.0}", dDec)
+            cmd &= s.Substring(0, s.Length - 2)
+            s = String.Format(" ALT{0:+000.0;-000.0}", dALT)
+            cmd &= s.Substring(0, s.Length - 2)
+            s = String.Format(" AZ{0:+000.0;-000.0}", dAZ)
+            cmd &= s.Substring(0, s.Length - 2)
+            SerialPort2.Write(cmd & vbCr) ' send upstream
+            List1.AppendText("fromPC: " & cmd & vbCrLf) ' display msg to list
+            SerialPort2.Write(cmd & vbCr) ' send upstream 
+        End If
     End Sub
 
     ' data back from the PC
@@ -223,14 +280,25 @@
         End Try
     End Sub
 
+
+    ' from upstream (the driver)
     Private Sub SerialPort2_DataReceived(sender As Object, e As IO.Ports.SerialDataReceivedEventArgs) Handles SerialPort2.DataReceived
         Dim indata As String
         Try
-            indata = SerialPort1.ReadLine() ' waits here for full line, ending in \r
+            indata = SerialPort2.ReadLine() ' waits here for full line, ending in \r
             ' pass it on to the PC
-            Me.Invoke(Sub() sendPCcmd(indata)) ' because we are in a thread
+            Me.Invoke(Sub() sendPCcmd(indata & vbCr)) ' invoke because we are in a thread
             ' TODO any special processing? Question answering?
         Catch
         End Try
     End Sub
+
+#Region "PC cmds sent via the driver"
+    Private Sub Button3_Click(sender As Object, e As EventArgs) Handles Button3.Click
+        List1.AppendText("asking for HA&Dec" & vbCrLf)
+        Dim ret As String = driver.Action("ScopePosition", "")
+        List1.AppendText("spcPC: " & ret & vbCrLf)
+    End Sub
+
+#End Region
 End Class

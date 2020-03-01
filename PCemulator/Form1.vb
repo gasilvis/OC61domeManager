@@ -5,6 +5,7 @@
         For Each sp As String In My.Computer.Ports.SerialPortNames
             ComboBox1.Items.Add(sp)
         Next
+        ComboBox1.SelectedIndex = ComboBox1.FindStringExact("COM20")
     End Sub
 
     Private Sub ComboBox1_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ComboBox1.SelectedIndexChanged
@@ -23,7 +24,7 @@
     Private Sub sendmsg(Message As String)
         ' send back 
         List1.AppendText("resp: " & Message & vbCrLf)
-        SerialPort1.Write(Message & vbCr)
+        If SerialPort1.IsOpen Then SerialPort1.Write(Message & vbCr)
     End Sub
 
     Private Sub processCmd(cmd As String)
@@ -39,6 +40,10 @@
         End Try
     End Sub
 
+    Private Const HA_Pot_ZeroReference As Integer = 512
+    Private Const DEC_Pot_ZeroReference As Integer = 512
+    Private Const HA_Pot_ScaleFactor As Double = 0.38136 ' about 23" per tic
+    Private Const DEC_Pot_ScaleFactor As Double = 0.39823
 
 #Region "button code"
     Private Sub Label2_Click(sender As Object, e As EventArgs) Handles Label2.Click
@@ -82,7 +87,36 @@
     End Sub
 
     Private Sub Label10_Click(sender As Object, e As EventArgs) Handles Label10.Click
-        sendmsg("HA" & HAbox.Text & " Dec" & DecBox.Text)
+        ' send HA and Dec
+        If Not IsNumeric(HAbox.Text) Then HAbox.Text = "600"
+        Dim HA_Pot_AvgVal As Integer = CInt(HAbox.Text)
+        Dim HA_RelativeVal As Integer = HA_Pot_AvgVal - HA_Pot_ZeroReference
+        HA_RelativeVal = HA_Pot_AvgVal - HA_Pot_ZeroReference
+        Dim HA_AngleFromPot As Double = HA_RelativeVal * HA_Pot_ScaleFactor
+        Dim HA_String As String = String.Format("{0:+000.0;-000.0}", HA_AngleFromPot).Substring(0, 4) ' to allow -000
+
+        If Not IsNumeric(DecBox.Text) Then DecBox.Text = "600"
+        Dim DEC_Pot_AvgVal As Integer = CInt(DecBox.Text)
+        Dim DEC_RelativeVal As Integer = DEC_Pot_AvgVal - DEC_Pot_ZeroReference
+        DEC_RelativeVal = DEC_Pot_AvgVal - DEC_Pot_ZeroReference
+        Dim DEC_AngleFromPot As Double = DEC_RelativeVal * DEC_Pot_ScaleFactor
+        Dim DEC_String As String = String.Format("{0:+000.0;-000.0}", DEC_AngleFromPot).Substring(0, 4)
+
+        sendmsg("HA" & HA_String & " DEC" & DEC_String)
+    End Sub
+
+    Private Sub Label18_Click(sender As Object, e As EventArgs) Handles Label18.Click
+        ' send pot values
+        If Not IsNumeric(HAbox.Text) Then HAbox.Text = "400"
+        Dim HA_Pot_AvgVal As Integer = CInt(HAbox.Text)
+        Dim HA_RelativeVal As Integer = HA_Pot_AvgVal - HA_Pot_ZeroReference
+        Dim s As String = "HA_ABS: " & CInt(HA_Pot_AvgVal) & " HA_REL: " & CInt(HA_RelativeVal)
+
+        If Not IsNumeric(DecBox.Text) Then DecBox.Text = "600"
+        Dim DEC_Pot_AvgVal As Integer = CInt(DecBox.Text)
+        Dim DEC_RelativeVal As Integer = DEC_Pot_AvgVal - DEC_Pot_ZeroReference
+        s = s & " DEC_ABS: " & CInt(DEC_Pot_AvgVal) & " DEC_REL: " & CInt(DEC_RelativeVal)
+        sendmsg(s)
     End Sub
 
     Private Sub Label9_Click(sender As Object, e As EventArgs) Handles Label9.Click

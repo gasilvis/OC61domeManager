@@ -95,3 +95,9 @@ Send_DEC_ScaleFactorToPC()
 
 
 ============================================================
+
+Install virtual com ports
+30-31   for the driver to PCapp connection
+21-20   for the PCapp to PCemulator testing connection
+enable baudrate emulation and recevive buffer overrun
+

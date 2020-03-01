@@ -1292,7 +1292,7 @@ void SendPositionsToPC()
 	float AbsVal;
 
 	AbsVal = fabs(HourAngleFromPot);
-	ftoa(AbsVal, 0, TextString);
+	ftoa(AbsVal, 0, TextString);      // truncates 
 	StrLength = strlen(TextString);
 	if (HourAngleFromPot < 0) strcpyf(PadString, "-"); else strcpyf(PadString, "+");
 	if (StrLength == 1) strcatf(PadString, "00");
