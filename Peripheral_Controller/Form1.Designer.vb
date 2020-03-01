@@ -75,8 +75,6 @@ Partial Class Form1
         Me.cmdSync_DEC_Pot = New System.Windows.Forms.Button()
         Me.cmdSync_HA_Pot = New System.Windows.Forms.Button()
         Me.SerialPort2 = New System.IO.Ports.SerialPort(Me.components)
-        Me.GroupBox8 = New System.Windows.Forms.GroupBox()
-        Me.Button3 = New System.Windows.Forms.Button()
         Me.GroupBox1.SuspendLayout()
         Me.Frame2.SuspendLayout()
         Me.Frame3.SuspendLayout()
@@ -89,7 +87,6 @@ Partial Class Form1
         Me.TabPage1.SuspendLayout()
         Me.TabPage2.SuspendLayout()
         Me.GroupBox7.SuspendLayout()
-        Me.GroupBox8.SuspendLayout()
         Me.SuspendLayout()
         '
         'GroupBox1
@@ -636,35 +633,11 @@ Partial Class Form1
         'SerialPort2
         '
         '
-        'GroupBox8
-        '
-        Me.GroupBox8.BackColor = System.Drawing.SystemColors.GradientActiveCaption
-        Me.GroupBox8.Controls.Add(Me.Button3)
-        Me.GroupBox8.Location = New System.Drawing.Point(568, 494)
-        Me.GroupBox8.Margin = New System.Windows.Forms.Padding(4)
-        Me.GroupBox8.Name = "GroupBox8"
-        Me.GroupBox8.Padding = New System.Windows.Forms.Padding(4)
-        Me.GroupBox8.Size = New System.Drawing.Size(354, 83)
-        Me.GroupBox8.TabIndex = 17
-        Me.GroupBox8.TabStop = False
-        Me.GroupBox8.Text = "get from driver"
-        '
-        'Button3
-        '
-        Me.Button3.Location = New System.Drawing.Point(22, 28)
-        Me.Button3.Margin = New System.Windows.Forms.Padding(4)
-        Me.Button3.Name = "Button3"
-        Me.Button3.Size = New System.Drawing.Size(144, 40)
-        Me.Button3.TabIndex = 0
-        Me.Button3.Text = "get HA/Dec"
-        Me.Button3.UseVisualStyleBackColor = True
-        '
         'Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(11.0!, 20.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1152, 605)
-        Me.Controls.Add(Me.GroupBox8)
         Me.Controls.Add(Me.GroupBox7)
         Me.Controls.Add(Me.TabControl1)
         Me.Controls.Add(Me.GroupBox6)
@@ -678,7 +651,7 @@ Partial Class Form1
         Me.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.2!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Margin = New System.Windows.Forms.Padding(6, 5, 6, 5)
         Me.Name = "Form1"
-        Me.Text = "Peripheral Controller Application"
+        Me.Text = "Peripheral Controller Application   ver 1"
         Me.GroupBox1.ResumeLayout(False)
         Me.Frame2.ResumeLayout(False)
         Me.Frame3.ResumeLayout(False)
@@ -693,7 +666,6 @@ Partial Class Form1
         Me.TabPage1.ResumeLayout(False)
         Me.TabPage2.ResumeLayout(False)
         Me.GroupBox7.ResumeLayout(False)
-        Me.GroupBox8.ResumeLayout(False)
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -750,6 +722,4 @@ Partial Class Form1
     Private WithEvents cmdSync_DEC_Pot As Button
     Private WithEvents cmdSync_HA_Pot As Button
     Friend WithEvents SerialPort2 As IO.Ports.SerialPort
-    Friend WithEvents GroupBox8 As GroupBox
-    Friend WithEvents Button3 As Button
 End Class

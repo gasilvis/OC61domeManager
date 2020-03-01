@@ -26,6 +26,7 @@ Partial Class Form1
         Me.List1 = New System.Windows.Forms.TextBox()
         Me.GroupBox1 = New System.Windows.Forms.GroupBox()
         Me.GroupBox4 = New System.Windows.Forms.GroupBox()
+        Me.Label18 = New System.Windows.Forms.Label()
         Me.Label17 = New System.Windows.Forms.Label()
         Me.Label14 = New System.Windows.Forms.Label()
         Me.Label13 = New System.Windows.Forms.Label()
@@ -49,7 +50,6 @@ Partial Class Form1
         Me.Label2 = New System.Windows.Forms.Label()
         Me.ComboBox1 = New System.Windows.Forms.ComboBox()
         Me.SerialPort1 = New System.IO.Ports.SerialPort(Me.components)
-        Me.Label18 = New System.Windows.Forms.Label()
         Me.GroupBox1.SuspendLayout()
         Me.GroupBox4.SuspendLayout()
         Me.GroupBox3.SuspendLayout()
@@ -97,6 +97,15 @@ Partial Class Form1
         Me.GroupBox4.TabIndex = 4
         Me.GroupBox4.TabStop = False
         Me.GroupBox4.Text = "position"
+        '
+        'Label18
+        '
+        Me.Label18.AutoSize = True
+        Me.Label18.Location = New System.Drawing.Point(188, 61)
+        Me.Label18.Name = "Label18"
+        Me.Label18.Size = New System.Drawing.Size(110, 17)
+        Me.Label18.TabIndex = 11
+        Me.Label18.Text = "Send pot values"
         '
         'Label17
         '
@@ -309,15 +318,6 @@ Partial Class Form1
         'SerialPort1
         '
         '
-        'Label18
-        '
-        Me.Label18.AutoSize = True
-        Me.Label18.Location = New System.Drawing.Point(188, 61)
-        Me.Label18.Name = "Label18"
-        Me.Label18.Size = New System.Drawing.Size(110, 17)
-        Me.Label18.TabIndex = 11
-        Me.Label18.Text = "Send pot values"
-        '
         'Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
@@ -327,7 +327,7 @@ Partial Class Form1
         Me.Controls.Add(Me.GroupBox1)
         Me.Controls.Add(Me.List1)
         Me.Name = "Form1"
-        Me.Text = "Peripheral Controller Emulator"
+        Me.Text = "Peripheral Controller Emulator  ver 1"
         Me.GroupBox1.ResumeLayout(False)
         Me.GroupBox4.ResumeLayout(False)
         Me.GroupBox4.PerformLayout()

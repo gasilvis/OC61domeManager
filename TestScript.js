@@ -27,10 +27,10 @@ var Util;
 if (RunMode === null) { // windows
     RunMode = RunModes.ACPconsole; // guess
     try {
-        Console.Printline("in ACP console"); // this will fault in cscript (standalone or ShellExec)
+        Printline("in ACP console"); // this will fault in cscript (standalone or ShellExec)
         //Util= new ActiveXObject("ACP.Util");
     } catch (e) {
-        try { // ACP needs this to make WScrip available
+        try { // ACP needs this to make WScript available
             Util = new ActiveXObject("ACP.Util"); // tbd  bomb out if this fails, as it does sometimes
         } catch (e) { } // no error needed  
         RunMode = RunModes.CScript;
@@ -87,20 +87,31 @@ switch (arg) {
         ret = dome.Action("ScopePosition", "");
         PrintLine(ret);
         break;
+    case "pots":
+        PrintLine("fetch the current ADC pot values");
+        ret = dome.Action("ADCvalues", "");
+        PrintLine(ret);
+        break;
     case "open":
-        PrintLine("Open the shutter")
+        PrintLine("Open the shutter");
         dome.OpenShutter();
+        do {
+            arg = dome.ShutterStatus();
+            PrintLine("shutter: " + arg);
+            //Util.WaitForMilliseconds(500);
+        } while (arg != 0 && arg != 4);
         break;
     case "close":
-        PrintLine("Close the shutter")
+        PrintLine("Close the shutter");
         dome.CloseShutter();
         do {
             arg = dome.ShutterStatus();
-            PrintLine("shutter: "+ arg)
+            PrintLine("shutter: " + arg);
+            //Util.WaitForMilliseconds(500);
         } while (arg != 1 && arg != 4);
         break;
     default:
-        PrintLine("need an argument:  pos, open or close");
+        PrintLine("need an argument:  pos, pots, open or close");
         break;
 }
 

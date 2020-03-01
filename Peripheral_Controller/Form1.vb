@@ -7,7 +7,7 @@
         For Each sp As String In My.Computer.Ports.SerialPortNames
             ComboBox1.Items.Add(sp)
         Next
-        ComboBox1.SelectedIndex = ComboBox1.FindStringExact("COM21") ' or the real one
+        ComboBox1.SelectedIndex = ComboBox1.FindStringExact("COM7") ' or the real one
         ' connect to the upstream link
         SerialPort2.PortName = "COM31"
         SerialPort2.BaudRate = 9600
@@ -74,10 +74,8 @@
     Private Sub TabControl1_Selected(sender As Object, e As TabControlEventArgs) Handles TabControl1.Selected
         If TabControl1.SelectedIndex = 0 Then ' serial port
             driver.Connected = False
-            GroupBox8.Enabled = False
         Else ' driver
             SerialPort1.Close()
-            GroupBox8.Enabled = True
         End If
     End Sub
 
@@ -154,11 +152,23 @@
     End Sub
 
     Private Sub cmdGetPositions_Click(sender As Object, e As EventArgs) Handles cmdGetPositions.Click
-        sendPCcmd("*SEND_POSITION" & vbCr)
+        If TabControl1.SelectedIndex = 0 Then ' serial port
+            sendPCcmd("*SEND_POSITION" & vbCr)
+        Else 'driver
+            List1.AppendText("asking for HA&Dec" & vbCrLf)
+            Dim ret As String = driver.Action("ScopePosition", "")
+            List1.AppendText("spcPC: " & ret & vbCrLf)
+        End If
     End Sub
 
     Private Sub cmdGetPot_ADU_Values_Click(sender As Object, e As EventArgs) Handles cmdGetPot_ADU_Values.Click
-        sendPCcmd("*SEND_ADC_VALS" & vbCr)
+        If TabControl1.SelectedIndex = 0 Then ' serial port
+            sendPCcmd("*SEND_ADC_VALS" & vbCr)
+        Else ' driver
+            List1.AppendText("asking for ADC values" & vbCrLf)
+            Dim ret As String = driver.Action("ADCvalues", "")
+            List1.AppendText("spcPC: " & ret & vbCrLf)
+        End If
     End Sub
 
     Private Sub cmdGetHA_Pot_ZeroRef_Click(sender As Object, e As EventArgs) Handles cmdGetHA_Pot_ZeroRef.Click
@@ -293,12 +303,4 @@
         End Try
     End Sub
 
-#Region "PC cmds sent via the driver"
-    Private Sub Button3_Click(sender As Object, e As EventArgs) Handles Button3.Click
-        List1.AppendText("asking for HA&Dec" & vbCrLf)
-        Dim ret As String = driver.Action("ScopePosition", "")
-        List1.AppendText("spcPC: " & ret & vbCrLf)
-    End Sub
-
-#End Region
 End Class

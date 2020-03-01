@@ -1,14 +1,13 @@
 'tabs=4
 ' --------------------------------------------------------------------------------
-' TODO fill in this information for your driver, then remove this line!
 '
 ' ASCOM Dome driver for OC61domeServer2
 '
 ' Description:	- This driver wraps around a Dome driver, simply passing
-'				all commands and requests. 
+'				all commands and requests. And
 '               - It provides a serial interface to the OC61 Peripheral Controller
 '                     commands supported
-'                         Action("ScopePosition
+'                         Action("ScopePosition")
 '                         ShutterStatus queries the PC
 '				- It watches for Shutter changes and moves a mirror cover
 '				   as appropriate. The mirror cover is accessed via the Peripheral Controll
@@ -63,7 +62,7 @@ Public Class Dome
     ' The ClassInterface/None addribute prevents an empty interface called
     ' _OC61domeServer2 from being created and used as the [default] interface
 
-    ' TODO Replace the not implemented exceptions with code to implement the function or
+    ' Replace the "not implemented exceptions" with code to implement the function or
     ' throw the appropriate ASCOM exception.
     '
     Implements IDomeV2
@@ -91,7 +90,8 @@ Public Class Dome
     Private TL As TraceLogger ' Private variable to hold the trace logger object (creates a diagnostic log file with information that you specify)
     Friend Shared childDome As ASCOM.DriverAccess.Dome
     Friend Shared PCStatusUpdateTimer As System.Timers.Timer
-
+    Friend Shared PCStatusUpdateCounter As Integer
+    Friend Shared PCStatusUpdateCalled As Integer = False
     '
     ' Constructor - Must be public for COM registration!
     '
@@ -111,21 +111,38 @@ Public Class Dome
         astroUtilities = New AstroUtils 'Initialise new astro utiliites object
         childDome = New ASCOM.DriverAccess.Dome(childDomeId)
 
-        'TODO: Implement your additional construction here
+        ' Implement your additional construction here
         PCStatusUpdateTimer = New System.Timers.Timer()
         AddHandler PCStatusUpdateTimer.Elapsed, AddressOf OnPCstatusUpdate
         PCStatusUpdateTimer.Interval = 1000
         PCStatusUpdateTimer.Enabled = False
 
         OC61ActionList.Add("ScopePosition")
+        OC61ActionList.Add("ADCvalues")
 
         TL.LogMessage("Dome", "Completed initialisation")
 
 
     End Sub
 
+    ' not in use
     Public Sub OnPCstatusUpdate(ByVal sender As Object, ByVal e As System.Timers.ElapsedEventArgs)
         ' runs every second
+        TL.LogMessage("PCStatusTimer", "checking shutter status")
+        PCStatusUpdateCalled = True ' signal for ShutterStatus that this timer is calling, so do its job
+        domeShutterState = ShutterStatus()
+        PCStatusUpdateCalled = False
+        If domeShutterState <> ShutterState.shutterClosing And domeShutterState <> ShutterState.shutterOpening Then
+            PCStatusUpdateTimer.Enabled = False ' we're done with the timer
+            TL.LogMessage("PCStatustimer", "finisihed")
+        Else
+            PCStatusUpdateCounter -= 1
+            If PCStatusUpdateCounter <= 0 Then
+                PCStatusUpdateTimer.Enabled = False
+                domeShutterState = ShutterState.shutterError
+                TL.LogMessage("PCStatusTimer", "Timedout error")
+            End If
+        End If
     End Sub
 
     '
@@ -178,6 +195,12 @@ Public Class Dome
                 ret = Listener({"True"})
                 If ret = "" Then ret = "timed out" 'Throw New TimeoutException
                 Return ret
+            Case "adcvalues"
+                ' ask for HA, look for true and return
+                CommandBlind("*SEND_ADC_VALS" & vbCr) ' Get HA, Dec
+                ret = Listener({"HA_ABS"})
+                If ret = "" Then ret = "timed out" 'Throw New TimeoutException
+                Return ret
             Case Else
                 Return childDome.Action(ActionName, ActionParameters)
         End Select
@@ -200,7 +223,7 @@ Public Class Dome
                         Return rdata
                     End If
                 Next
-                'Return "no prefix: " & rdata ' TODO comment out
+                'Return "no prefix: " & rdata '  comment out
             Catch
             End Try
             cnt -= 1
@@ -310,8 +333,7 @@ Public Class Dome
     Public ReadOnly Property InterfaceVersion() As Short Implements IDomeV2.InterfaceVersion
         Get
             TL.LogMessage("InterfaceVersion Get", "2")
-            'Return 2
-            Return childDome.InterfaceVersion
+            Return childDome.InterfaceVersion ' 2
         End Get
     End Property
 
@@ -490,37 +512,26 @@ Public Class Dome
     End Sub
 
     Public Sub CloseShutter() Implements IDomeV2.CloseShutter
-        TL.LogMessage("CloseShutter", "Shutter close requested")
-        GetShutterStates()
-        domeShutterState = childdomeShutterState
-        Select Case domeShutterState
-            Case ShutterState.shutterOpen, ShutterState.shutterOpening, ShutterState.shutterError
-                domeShutterState = ShutterState.shutterClosing
-                If mirrorCoverState = MirrorCoverStates.mirrorcoverClosed Then
-                    childDome.CloseShutter()
-                Else ' close the mirror cover first
-                    CommandBlind("*CLOSE_MIRROR_COVER" & vbCr)
-                End If
-            Case ShutterState.shutterClosed, ShutterState.shutterClosing
-                ' do nothing
-        End Select
+        TL.LogMessage("CloseShutter", "Shutter close requested: close mirror cover")
+        domeShutterState = ShutterState.shutterClosing
+        CommandBlind("*CLOSE_MIRROR_COVER" & vbCr)
+        '' Poll the PC to move the close process forward
+        'PCStatusUpdateCounter = 20
+        'PCStatusUpdateTimer.Enabled = True
     End Sub
 
     Public Sub OpenShutter() Implements IDomeV2.OpenShutter
-        TL.LogMessage("OpenShutter", "Shutter open requested")
-        GetShutterStates() ' make sure it is initialized
-        domeShutterState = childdomeShutterState
-        Select Case domeShutterState
-            Case ShutterState.shutterClosed, ShutterState.shutterClosing, ShutterState.shutterError
-                domeShutterState = ShutterState.shutterOpening
-                childDome.OpenShutter()
-            Case ShutterState.shutterOpen, ShutterState.shutterOpening
-                ' do nothing
-        End Select
+        TL.LogMessage("OpenShutter", "Shutter open requested; open child shutter")
+        domeShutterState = ShutterState.shutterOpening
+        childDome.OpenShutter()
+        '' Poll the PC to move the open process forward
+        'PCStatusUpdateCounter = 20
+        'PCStatusUpdateTimer.Enabled = True
     End Sub
 
     Public Function ShutterStates() As String
-        dim ret As String
+        ' use in log messages
+        Dim ret As String
         ret = "DS:" & ShutterStateNames(domeShutterState)
         ret &= ", CS:" & ShutterStateNames(childdomeShutterState)
         ret &= ", MS:" & MirrorCoverStateNames(mirrorCoverState)
@@ -548,110 +559,37 @@ Public Class Dome
 
     Public ReadOnly Property ShutterStatus() As ShutterState Implements IDomeV2.ShutterStatus
         Get
-            ' ask  mirrorcoverState and childdome states
+            'If PCStatusUpdateTimer.Enabled And Not PCStatusUpdateCalled Then
+            '    Return domeShutterState ' used the value caught by the timer calls
+            'End If
+            ' ask for mirrorcoverState and childdome states
             GetShutterStates()
             ' now figure out where we are, what we have to do
             If childdomeShutterState = ShutterState.shutterError Or mirrorCoverState = MirrorCoverStates.mirrorcoverError Then
                 domeShutterState = ShutterState.shutterError ' if there is an error out there, we are in error
                 TL.LogMessage("ShutterStatus", ShutterStates() & " error!")
-            Else ' 4 x 3 states now
-                Select Case childdomeShutterState
-                    Case ShutterState.shutterClosed
-                        Select Case mirrorCoverState
-                            Case MirrorCoverStates.mirrorcoverClosed
-                                domeShutterState = ShutterState.shutterClosed
-                                TL.LogMessage("ShutterStatus", ShutterStates() & " OK closed state")
-                            Case MirrorCoverStates.mirrorcoverOpen
-                                CommandBlind("*CLOSE_MIRROR_COVER" & vbCr)
-                                domeShutterState = ShutterState.shutterClosing
-                                TL.LogMessage("ShutterStatus", ShutterStates() & " late for closing mc")
-                            Case MirrorCoverStates.mirrorcoverPartial
-                                domeShutterState = ShutterState.shutterClosing
-                                TL.LogMessage("ShutterStatus", ShutterStates() & " mc should not be still moving")
-                        End Select
-                    Case ShutterState.shutterOpen
-                        Select Case mirrorCoverState
-                            Case MirrorCoverStates.mirrorcoverClosed
-                                CommandBlind("*OPEN_MIRROR_COVER" & vbCr)
-                                domeShutterState = ShutterState.shutterOpening
-                                TL.LogMessage("ShutterStatus", ShutterStates() & " now open the mc")
-                            Case MirrorCoverStates.mirrorcoverOpen
-                                domeShutterState = ShutterState.shutterOpen ' done opening
-                                TL.LogMessage("ShutterStatus", ShutterStates() & " OK open state")
-                            Case MirrorCoverStates.mirrorcoverPartial
-                                domeShutterState = ShutterState.shutterOpening
-                                TL.LogMessage("ShutterStatus", ShutterStates() & " mc opening")
-                        End Select
-                    Case ShutterState.shutterOpening
-                        domeShutterState = ShutterState.shutterOpening
-                        Select Case mirrorCoverState
-                            Case MirrorCoverStates.mirrorcoverClosed
-                                TL.LogMessage("ShutterStatus", ShutterStates() & " mc is waiting on shutter")
-                            Case MirrorCoverStates.mirrorcoverOpen
-                                TL.LogMessage("ShutterStatus", ShutterStates() & " should not be")
-                            Case MirrorCoverStates.mirrorcoverPartial
-                                TL.LogMessage("ShutterStatus", ShutterStates() & " should not be")
-                        End Select
-                    Case ShutterState.shutterClosing
-                        domeShutterState = ShutterState.shutterClosing
-                        Select Case mirrorCoverState
-                            Case MirrorCoverStates.mirrorcoverClosed
-                                TL.LogMessage("ShutterStatus", ShutterStates() & " waiting on shutter")
-                            Case MirrorCoverStates.mirrorcoverOpen
-                                TL.LogMessage("ShutterStatus", ShutterStates() & " should not be.")
-                            Case MirrorCoverStates.mirrorcoverPartial
-                                TL.LogMessage("ShutterStatus", ShutterStates() & " should not be.")
-                        End Select
-                End Select
+            Else
+                If domeShutterState = ShutterState.shutterClosing Then
+                    If mirrorCoverState = MirrorCoverStates.mirrorcoverClosed And childdomeShutterState = ShutterState.shutterClosed Then
+                        domeShutterState = ShutterState.shutterClosed
+                        TL.LogMessage("CloseShutter", "Shutter closed")
+                    ElseIf mirrorCoverState = MirrorCoverStates.mirrorcoverClosed And childdomeShutterState <> ShutterState.shutterClosing Then
+                        childDome.CloseShutter()
+                        TL.LogMessage("CloseShutter", "Close the child shutter")
+                    End If
+
+                ElseIf domeShutterState = ShutterState.shutterOpening Then
+                    If mirrorCoverState = MirrorCoverStates.mirrorcoverOpen And childdomeShutterState = ShutterState.shutterOpen Then
+                        domeShutterState = ShutterState.shutterOpen
+                        TL.LogMessage("OpenShutter", "Shutter open")
+                    ElseIf childdomeShutterState = ShutterState.shutterOpen And mirrorCoverState <> MirrorCoverStates.mirrorcoverPartial Then
+                        CommandBlind("*OPEN_MIRROR_COVER" & vbCr)
+                        TL.LogMessage("OpenShutter", "Open the mirror cover")
+                    End If
+                End If
+                '' might be in error due to timeout  not implemented
             End If
             Return domeShutterState
-
-
-
-
-
-
-            Select Case domeShutterState
-                Case ShutterState.shutterOpening
-                    ' wait for child open, then open mirrorcover
-
-
-                Case ShutterState.shutterClosing
-                    ' if the mirrorcover is closed we can ask the child to close
-
-            End Select
-
-
-
-            If childdomeShutterState = ShutterState.shutterOpen Then
-                Select Case domeShutterState
-                    Case ShutterState.shutterOpen
-                        ' we're in aggrement
-                    Case ShutterState.shutterOpening
-                        ' check the mirror cover
-                        Select Case mirrorCoverState
-                            Case MirrorCoverStates.mirrorcoverOpen
-                                domeShutterState = ShutterState.shutterOpen ' done opening
-                            Case MirrorCoverStates.mirrorcoverClosed
-                                childDome.OpenShutter()
-                            Case MirrorCoverStates.mirrorcoverPartial
-                                ' do nothing for now; it is opening
-                            Case MirrorCoverStates.mirrorcoverError
-                                TL.LogMessage("Mirror Cover", "reporting an error:")
-                                domeShutterState = ShutterState.shutterError
-                        End Select ' mirrorCoverState
-                    Case ShutterState.shutterClosed, ShutterState.shutterClosing
-                        TL.LogMessage("Shutter state confusion", "child reports open when local driver thinks its Shutter is closed/closing")
-                        domeShutterState = ShutterState.shutterError
-                    Case ShutterState.shutterError
-                        ' let it stand as error
-                End Select ' domeShutterState
-            Else ' opening, closing, closed, error
-                domeShutterState = childdomeShutterState ' child state is our state
-            End If
-
-            Return domeShutterState
-
         End Get
     End Property
 
