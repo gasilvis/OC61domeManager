@@ -6,6 +6,9 @@ The situation at the OC61 observatory required an extension of the standard ASCO
     and close before the shutter started closing. There was no way to script for these events in the ACP control software, so
     this driver was conceived to pass all commands and comm through to the working dome driver (MaxDomeII), but 
     also monitor and act when it saw shutter open and close commands.
+  - The dome driver has two setup items:
+    - the actual ASCOM dome driver to control the dome (MaxDomeII). Or a dome simulator
+    - the serial port that connects it to the Peripheral Controller
   - The mirror cover is driven by custom electronics (the Peripheral Controller, aka PC) directed via a serial port. 
     There exists a VB6 application to talk to the PC via that serial port and make accessible all the 
     functionality of the PC via a GUI. To make the PC accessible to external scripts and the ACP control software
@@ -21,7 +24,10 @@ The situation at the OC61 observatory required an extension of the standard ASCO
     COM20:COM21. The PCemul connects to COM20. So you can exercise the PCapp by having it connect to COM21. The PCEmul 
     is not a full emulation, but it can return any of the strings the real PC might send.
   - There are lots of configurations for this software!
-    - PCapp connect to COM21 to the PCemul
+    - PCapp connect to the PCemul via COM21 
     - PCapp connect to the real PC (COM7 on the OC61 control computer)
-    - PCapp to the ASCOM dome driver....
+    - The dome driver can connect to either the PCemul or the PC itself
+    - And the dome driver can be itself receive commands from ACP, a script, or.. another copy of the PCapp! 
+    
+        
           Here the 
