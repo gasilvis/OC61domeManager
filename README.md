@@ -17,4 +17,11 @@ The situation at the OC61 observatory required an extension of the standard ASCO
   - The PCapp can also augment data coming from the PC. For instance, when it sees the HA/DEC readings from the PC
     it can compute the ALT/AZ and pass this upstream.  
   - The code for the existing Peripheral Controller VB6 app is included in the repo, along with the firmware of the controller itself.     
-    
+  - The project also includes a PC emulator for testing. The computer has a second pair of virtual com ports installed:
+    COM20:COM21. The PCemul connects to COM20. So you can exercise the PCapp by having it connect to COM21. The PCEmul 
+    is not a full emulation, but it can return any of the strings the real PC might send.
+  - There are lots of configurations for this software!
+    - PCapp connect to COM21 to the PCemul
+    - PCapp connect to the real PC (COM7 on the OC61 control computer)
+    - PCapp to the ASCOM dome driver....
+          Here the 
