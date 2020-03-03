@@ -254,8 +254,11 @@
             ' pass on, but send a second, better, signal with Dec corrected and Alt and Az
             Dim dHA As Double = CDbl(cmd.Substring(2, 4))
             Dim dDec As Double = CDbl(cmd.Substring(10, 4))
-            If dDec > 90 Then dDec = 180 - dDec
-            If dDec < -90 Then dDec = -180 - dDec
+            If dDec > 90 Then
+                dDec = 180 - dDec
+            ElseIf dDec < -90 Then
+                dDec = -180 - dDec
+            End If
             Dim toRads As Double = Math.Asin(1) / 90 ' pi / 180
             Dim DEC As Double = dDec * toRads
             Dim LAT As Double = dLAT * toRads
@@ -267,7 +270,7 @@
             Dim dAZ As Double = AZ / toRads
             Dim s As String
             s = String.Format("True HA{0:+000.0;-000.0}", dHA) ' to allow -000
-            cmd = s.Substring(0, s.Length - 2)
+            cmd = s.Substring(0, s.Length - 2) ' clip tail so -0.00 is possible
             s = String.Format(" DEC{0:+000.0;-000.0}", dDec)
             cmd &= s.Substring(0, s.Length - 2)
             s = String.Format(" ALT{0:+000.0;-000.0}", dALT)

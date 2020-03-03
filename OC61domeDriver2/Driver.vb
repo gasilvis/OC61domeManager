@@ -13,7 +13,7 @@
 '				   as appropriate. The mirror cover is accessed via the Peripheral Controll
 '               attached to the serial port	we have selected.
 '
-' Implements:	ASCOM Dome interface version: 1.0
+' Implements:	ASCOM Dome interface version: 2.0
 ' Author:		(SGEO) George Silvis <George@GASilvis.net>
 '
 ' Edit Log:
