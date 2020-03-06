@@ -24,6 +24,8 @@
     Private Sub buttonConnect_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles buttonConnect.Click
         If (IsConnected) Then
             driver.Connected = False
+            driver.Dispose()
+            driver = Nothing
         Else
             driver = New ASCOM.DriverAccess.Dome(My.Settings.DriverId)
             driver.Connected = True
@@ -34,6 +36,8 @@
     Private Sub Form1_FormClosing(ByVal sender As System.Object, ByVal e As System.Windows.Forms.FormClosingEventArgs) Handles MyBase.FormClosing
         If IsConnected Then
             driver.Connected = False
+            driver.Dispose()
+            driver = Nothing
         End If
         ' the settings are saved automatically when this application is closed.
     End Sub

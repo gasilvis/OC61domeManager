@@ -81,7 +81,7 @@ dome.Connected = true;
 
 var arg
 arg = (WScript.Arguments.length > 0) ? (WScript.Arguments.Item(0)) : "huh?";
-
+var states = [ "open", "closed", "opening", "closing", "error"];
 switch (arg) {
     case "pos":
         PrintLine("fetch the current position");
@@ -98,7 +98,7 @@ switch (arg) {
         dome.OpenShutter();
         do {
             arg = dome.ShutterStatus();
-            PrintLine("shutter: " + arg);
+            PrintLine("shutter: " + states[arg]);
             //Util.WaitForMilliseconds(500);
         } while (arg != 0 && arg != 4);
         break;
@@ -107,7 +107,7 @@ switch (arg) {
         dome.CloseShutter();
         do {
             arg = dome.ShutterStatus();
-            PrintLine("shutter: " + arg);
+            PrintLine("shutter: " + states[arg]);
             //Util.WaitForMilliseconds(500);
         } while (arg != 1 && arg != 4);
         break;

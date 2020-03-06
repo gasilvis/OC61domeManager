@@ -27,8 +27,30 @@
         If SerialPort1.IsOpen Then SerialPort1.Write(Message & vbCr)
     End Sub
 
+    Dim mcstate As Integer = 0
+
     Private Sub processCmd(cmd As String)
         List1.AppendText("cmd: " & cmd & vbCrLf)
+        Select Case cmd
+            Case "*SEND_POSITION"
+                Label10_Click(Me, EventArgs.Empty)
+            Case "*SEND_ADC_VALS"
+                Label18_Click(Me, EventArgs.Empty)
+            Case "*OPEN_MIRROR_COVER"
+                If mcstate <> 10 Then mcstate = 13 ' if not open, start opening
+            Case "*CLOSE_MIRROR_COVER"
+                If mcstate <> 0 Then mcstate = 3 ' if not shut, start shutting
+            Case "*MIRROR_COVER_STATUS"
+                Select Case mcstate
+                    Case 0
+                        Label6_Click(Me, EventArgs.Empty) ' shut
+                    Case 10
+                        Label7_Click(Me, EventArgs.Empty) ' open
+                    Case Else
+                        Label8_Click(Me, EventArgs.Empty) ' partly open
+                        mcstate -= 1
+                End Select
+        End Select
     End Sub
 
     Private Sub SerialPort1_DataReceived(sender As Object, e As IO.Ports.SerialDataReceivedEventArgs) Handles SerialPort1.DataReceived

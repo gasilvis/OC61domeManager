@@ -7,15 +7,15 @@
         For Each sp As String In My.Computer.Ports.SerialPortNames
             ComboBox1.Items.Add(sp)
         Next
-        ComboBox1.SelectedIndex = ComboBox1.FindStringExact("COM7") ' or the real one
+        ComboBox1.SelectedIndex = ComboBox1.FindStringExact("COM7") ' the real one on OC61. COM21 is the PCemul
         ' connect to the upstream link
-        SerialPort2.PortName = "COM31"
+        SerialPort2.PortName = "COM31" ' this is connected to COM30
         SerialPort2.BaudRate = 9600
         SerialPort2.NewLine = vbCr
         Try
             SerialPort2.Open()
         Catch ex As System.UnauthorizedAccessException
-            TabControl1.SelectedIndex = 1 ' switch to driver mode since we are the upstream node
+            TabControl1.SelectedIndex = 1 ' switch to driver mode since we are probably the upstream client
         End Try
     End Sub
 
@@ -25,6 +25,8 @@
                 SerialPort1.Close()
             Else ' driver
                 driver.Connected = False
+                driver.Dispose()
+                driver = Nothing
             End If
         End If
         SerialPort2.Close()
@@ -41,6 +43,8 @@
     Private Sub buttonConnect_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles buttonConnect.Click
         If IsConnected Then
             driver.Connected = False
+            driver.Dispose()
+            driver = Nothing
         Else
             driver = New ASCOM.DriverAccess.Dome(My.Settings.DriverId)
             driver.Connected = True
@@ -74,6 +78,8 @@
     Private Sub TabControl1_Selected(sender As Object, e As TabControlEventArgs) Handles TabControl1.Selected
         If TabControl1.SelectedIndex = 0 Then ' serial port
             driver.Connected = False
+            driver.Dispose()
+            driver = Nothing
         Else ' driver
             SerialPort1.Close()
         End If
