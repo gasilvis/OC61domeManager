@@ -77,6 +77,7 @@ var ret;
 
 
 dome = new ActiveXObject("ASCOM.OC61domeServer2.Dome");
+dome.Connected = true;
 
 var arg
 arg = (WScript.Arguments.length > 0) ? (WScript.Arguments.Item(0)) : "huh?";
@@ -114,6 +115,10 @@ switch (arg) {
         PrintLine("need an argument:  pos, pots, open or close");
         break;
 }
+
+dome.Connected = false;
+dome.Dispose();
+dome = null;
 
 
 

@@ -94,11 +94,11 @@ Partial Class Form1
         Me.GroupBox1.BackColor = System.Drawing.SystemColors.GradientActiveCaption
         Me.GroupBox1.Controls.Add(Me.cmdGetHorizonSenseStatus)
         Me.GroupBox1.Controls.Add(Me.cmdOver_ride_HorizonSensor)
-        Me.GroupBox1.Location = New System.Drawing.Point(938, 410)
+        Me.GroupBox1.Location = New System.Drawing.Point(837, 423)
         Me.GroupBox1.Margin = New System.Windows.Forms.Padding(4)
         Me.GroupBox1.Name = "GroupBox1"
         Me.GroupBox1.Padding = New System.Windows.Forms.Padding(4)
-        Me.GroupBox1.Size = New System.Drawing.Size(195, 151)
+        Me.GroupBox1.Size = New System.Drawing.Size(184, 151)
         Me.GroupBox1.TabIndex = 6
         Me.GroupBox1.TabStop = False
         Me.GroupBox1.Text = "Horizon Sensor"
@@ -129,41 +129,41 @@ Partial Class Form1
         Me.Frame2.Controls.Add(Me.cmdGetMirrorCoverStatus)
         Me.Frame2.Controls.Add(Me.cmdShutMirrorCover)
         Me.Frame2.Controls.Add(Me.cmdOpenMirrorCover)
-        Me.Frame2.Location = New System.Drawing.Point(346, 209)
+        Me.Frame2.Location = New System.Drawing.Point(330, 211)
         Me.Frame2.Margin = New System.Windows.Forms.Padding(4)
         Me.Frame2.Name = "Frame2"
         Me.Frame2.Padding = New System.Windows.Forms.Padding(4)
-        Me.Frame2.Size = New System.Drawing.Size(183, 181)
+        Me.Frame2.Size = New System.Drawing.Size(159, 181)
         Me.Frame2.TabIndex = 7
         Me.Frame2.TabStop = False
         Me.Frame2.Text = "Mirror Cover"
         '
         'cmdGetMirrorCoverStatus
         '
-        Me.cmdGetMirrorCoverStatus.Location = New System.Drawing.Point(22, 124)
+        Me.cmdGetMirrorCoverStatus.Location = New System.Drawing.Point(8, 122)
         Me.cmdGetMirrorCoverStatus.Margin = New System.Windows.Forms.Padding(4)
         Me.cmdGetMirrorCoverStatus.Name = "cmdGetMirrorCoverStatus"
-        Me.cmdGetMirrorCoverStatus.Size = New System.Drawing.Size(144, 40)
+        Me.cmdGetMirrorCoverStatus.Size = New System.Drawing.Size(139, 40)
         Me.cmdGetMirrorCoverStatus.TabIndex = 2
         Me.cmdGetMirrorCoverStatus.Text = "Get Status"
         Me.cmdGetMirrorCoverStatus.UseVisualStyleBackColor = True
         '
         'cmdShutMirrorCover
         '
-        Me.cmdShutMirrorCover.Location = New System.Drawing.Point(22, 76)
+        Me.cmdShutMirrorCover.Location = New System.Drawing.Point(8, 74)
         Me.cmdShutMirrorCover.Margin = New System.Windows.Forms.Padding(4)
         Me.cmdShutMirrorCover.Name = "cmdShutMirrorCover"
-        Me.cmdShutMirrorCover.Size = New System.Drawing.Size(144, 40)
+        Me.cmdShutMirrorCover.Size = New System.Drawing.Size(139, 40)
         Me.cmdShutMirrorCover.TabIndex = 1
         Me.cmdShutMirrorCover.Text = "Shut"
         Me.cmdShutMirrorCover.UseVisualStyleBackColor = True
         '
         'cmdOpenMirrorCover
         '
-        Me.cmdOpenMirrorCover.Location = New System.Drawing.Point(22, 28)
+        Me.cmdOpenMirrorCover.Location = New System.Drawing.Point(8, 26)
         Me.cmdOpenMirrorCover.Margin = New System.Windows.Forms.Padding(4)
         Me.cmdOpenMirrorCover.Name = "cmdOpenMirrorCover"
-        Me.cmdOpenMirrorCover.Size = New System.Drawing.Size(144, 40)
+        Me.cmdOpenMirrorCover.Size = New System.Drawing.Size(139, 40)
         Me.cmdOpenMirrorCover.TabIndex = 0
         Me.cmdOpenMirrorCover.Text = "Open"
         Me.cmdOpenMirrorCover.UseVisualStyleBackColor = True
@@ -193,41 +193,41 @@ Partial Class Form1
         Me.Frame3.Controls.Add(Me.cmdGetFlipMirrorStatus)
         Me.Frame3.Controls.Add(Me.cmdDriveFlipMirrorOut)
         Me.Frame3.Controls.Add(Me.cmdDriveFlipMirrorIn)
-        Me.Frame3.Location = New System.Drawing.Point(346, 13)
+        Me.Frame3.Location = New System.Drawing.Point(330, 15)
         Me.Frame3.Margin = New System.Windows.Forms.Padding(4)
         Me.Frame3.Name = "Frame3"
         Me.Frame3.Padding = New System.Windows.Forms.Padding(4)
-        Me.Frame3.Size = New System.Drawing.Size(183, 175)
+        Me.Frame3.Size = New System.Drawing.Size(159, 175)
         Me.Frame3.TabIndex = 10
         Me.Frame3.TabStop = False
         Me.Frame3.Text = "Flip Mirror"
         '
         'cmdGetFlipMirrorStatus
         '
-        Me.cmdGetFlipMirrorStatus.Location = New System.Drawing.Point(22, 119)
+        Me.cmdGetFlipMirrorStatus.Location = New System.Drawing.Point(8, 122)
         Me.cmdGetFlipMirrorStatus.Margin = New System.Windows.Forms.Padding(4)
         Me.cmdGetFlipMirrorStatus.Name = "cmdGetFlipMirrorStatus"
-        Me.cmdGetFlipMirrorStatus.Size = New System.Drawing.Size(144, 40)
+        Me.cmdGetFlipMirrorStatus.Size = New System.Drawing.Size(139, 40)
         Me.cmdGetFlipMirrorStatus.TabIndex = 2
         Me.cmdGetFlipMirrorStatus.Text = "Get Status"
         Me.cmdGetFlipMirrorStatus.UseVisualStyleBackColor = True
         '
         'cmdDriveFlipMirrorOut
         '
-        Me.cmdDriveFlipMirrorOut.Location = New System.Drawing.Point(22, 74)
+        Me.cmdDriveFlipMirrorOut.Location = New System.Drawing.Point(8, 77)
         Me.cmdDriveFlipMirrorOut.Margin = New System.Windows.Forms.Padding(4)
         Me.cmdDriveFlipMirrorOut.Name = "cmdDriveFlipMirrorOut"
-        Me.cmdDriveFlipMirrorOut.Size = New System.Drawing.Size(144, 40)
+        Me.cmdDriveFlipMirrorOut.Size = New System.Drawing.Size(139, 40)
         Me.cmdDriveFlipMirrorOut.TabIndex = 1
         Me.cmdDriveFlipMirrorOut.Text = "Drive OUT"
         Me.cmdDriveFlipMirrorOut.UseVisualStyleBackColor = True
         '
         'cmdDriveFlipMirrorIn
         '
-        Me.cmdDriveFlipMirrorIn.Location = New System.Drawing.Point(22, 28)
+        Me.cmdDriveFlipMirrorIn.Location = New System.Drawing.Point(8, 31)
         Me.cmdDriveFlipMirrorIn.Margin = New System.Windows.Forms.Padding(4)
         Me.cmdDriveFlipMirrorIn.Name = "cmdDriveFlipMirrorIn"
-        Me.cmdDriveFlipMirrorIn.Size = New System.Drawing.Size(144, 40)
+        Me.cmdDriveFlipMirrorIn.Size = New System.Drawing.Size(139, 40)
         Me.cmdDriveFlipMirrorIn.TabIndex = 0
         Me.cmdDriveFlipMirrorIn.Text = "Drive IN"
         Me.cmdDriveFlipMirrorIn.UseVisualStyleBackColor = True
@@ -238,9 +238,9 @@ Partial Class Form1
         Me.GroupBox3.Controls.Add(Me.GroupBox5)
         Me.GroupBox3.Controls.Add(Me.cmdGetPot_ADU_Values)
         Me.GroupBox3.Controls.Add(Me.GroupBox2)
-        Me.GroupBox3.Location = New System.Drawing.Point(548, 14)
+        Me.GroupBox3.Location = New System.Drawing.Point(510, 37)
         Me.GroupBox3.Name = "GroupBox3"
-        Me.GroupBox3.Size = New System.Drawing.Size(374, 464)
+        Me.GroupBox3.Size = New System.Drawing.Size(309, 465)
         Me.GroupBox3.TabIndex = 12
         Me.GroupBox3.TabStop = False
         Me.GroupBox3.Text = "Position Pot Settings"
@@ -260,7 +260,7 @@ Partial Class Form1
         Me.GroupBox5.Margin = New System.Windows.Forms.Padding(4)
         Me.GroupBox5.Name = "GroupBox5"
         Me.GroupBox5.Padding = New System.Windows.Forms.Padding(4)
-        Me.GroupBox5.Size = New System.Drawing.Size(330, 162)
+        Me.GroupBox5.Size = New System.Drawing.Size(276, 157)
         Me.GroupBox5.TabIndex = 14
         Me.GroupBox5.TabStop = False
         Me.GroupBox5.Text = "Pot Scale Factor"
@@ -268,7 +268,7 @@ Partial Class Form1
         'Label3
         '
         Me.Label3.AutoSize = True
-        Me.Label3.Location = New System.Drawing.Point(18, 106)
+        Me.Label3.Location = New System.Drawing.Point(6, 106)
         Me.Label3.Name = "Label3"
         Me.Label3.Size = New System.Drawing.Size(43, 20)
         Me.Label3.TabIndex = 9
@@ -276,27 +276,27 @@ Partial Class Form1
         '
         'txtDEC_Pot_ScaleFactor
         '
-        Me.txtDEC_Pot_ScaleFactor.Location = New System.Drawing.Point(140, 103)
+        Me.txtDEC_Pot_ScaleFactor.Location = New System.Drawing.Point(116, 103)
         Me.txtDEC_Pot_ScaleFactor.Name = "txtDEC_Pot_ScaleFactor"
-        Me.txtDEC_Pot_ScaleFactor.Size = New System.Drawing.Size(100, 27)
+        Me.txtDEC_Pot_ScaleFactor.Size = New System.Drawing.Size(85, 27)
         Me.txtDEC_Pot_ScaleFactor.TabIndex = 8
         '
         'cmdSetDEC_Pot_ScaleFactor
         '
-        Me.cmdSetDEC_Pot_ScaleFactor.Location = New System.Drawing.Point(247, 94)
+        Me.cmdSetDEC_Pot_ScaleFactor.Location = New System.Drawing.Point(208, 98)
         Me.cmdSetDEC_Pot_ScaleFactor.Margin = New System.Windows.Forms.Padding(4)
         Me.cmdSetDEC_Pot_ScaleFactor.Name = "cmdSetDEC_Pot_ScaleFactor"
-        Me.cmdSetDEC_Pot_ScaleFactor.Size = New System.Drawing.Size(66, 44)
+        Me.cmdSetDEC_Pot_ScaleFactor.Size = New System.Drawing.Size(53, 36)
         Me.cmdSetDEC_Pot_ScaleFactor.TabIndex = 7
         Me.cmdSetDEC_Pot_ScaleFactor.Text = "Set"
         Me.cmdSetDEC_Pot_ScaleFactor.UseVisualStyleBackColor = True
         '
         'cmdGetDEC_Pot_ScaleFactor
         '
-        Me.cmdGetDEC_Pot_ScaleFactor.Location = New System.Drawing.Point(67, 94)
+        Me.cmdGetDEC_Pot_ScaleFactor.Location = New System.Drawing.Point(56, 98)
         Me.cmdGetDEC_Pot_ScaleFactor.Margin = New System.Windows.Forms.Padding(4)
         Me.cmdGetDEC_Pot_ScaleFactor.Name = "cmdGetDEC_Pot_ScaleFactor"
-        Me.cmdGetDEC_Pot_ScaleFactor.Size = New System.Drawing.Size(66, 44)
+        Me.cmdGetDEC_Pot_ScaleFactor.Size = New System.Drawing.Size(53, 36)
         Me.cmdGetDEC_Pot_ScaleFactor.TabIndex = 6
         Me.cmdGetDEC_Pot_ScaleFactor.Text = "Get"
         Me.cmdGetDEC_Pot_ScaleFactor.UseVisualStyleBackColor = True
@@ -304,7 +304,7 @@ Partial Class Form1
         'Label4
         '
         Me.Label4.AutoSize = True
-        Me.Label4.Location = New System.Drawing.Point(15, 49)
+        Me.Label4.Location = New System.Drawing.Point(6, 49)
         Me.Label4.Name = "Label4"
         Me.Label4.Size = New System.Drawing.Size(35, 20)
         Me.Label4.TabIndex = 5
@@ -312,27 +312,27 @@ Partial Class Form1
         '
         'txtHA_Pot_ScaleFactor
         '
-        Me.txtHA_Pot_ScaleFactor.Location = New System.Drawing.Point(140, 46)
+        Me.txtHA_Pot_ScaleFactor.Location = New System.Drawing.Point(116, 46)
         Me.txtHA_Pot_ScaleFactor.Name = "txtHA_Pot_ScaleFactor"
-        Me.txtHA_Pot_ScaleFactor.Size = New System.Drawing.Size(100, 27)
+        Me.txtHA_Pot_ScaleFactor.Size = New System.Drawing.Size(85, 27)
         Me.txtHA_Pot_ScaleFactor.TabIndex = 4
         '
         'cmdSetHA_Pot_ScaleFactor
         '
-        Me.cmdSetHA_Pot_ScaleFactor.Location = New System.Drawing.Point(247, 37)
+        Me.cmdSetHA_Pot_ScaleFactor.Location = New System.Drawing.Point(208, 41)
         Me.cmdSetHA_Pot_ScaleFactor.Margin = New System.Windows.Forms.Padding(4)
         Me.cmdSetHA_Pot_ScaleFactor.Name = "cmdSetHA_Pot_ScaleFactor"
-        Me.cmdSetHA_Pot_ScaleFactor.Size = New System.Drawing.Size(66, 44)
+        Me.cmdSetHA_Pot_ScaleFactor.Size = New System.Drawing.Size(53, 36)
         Me.cmdSetHA_Pot_ScaleFactor.TabIndex = 3
         Me.cmdSetHA_Pot_ScaleFactor.Text = "Set"
         Me.cmdSetHA_Pot_ScaleFactor.UseVisualStyleBackColor = True
         '
         'cmdGetHA_Pot_ScaleFactor
         '
-        Me.cmdGetHA_Pot_ScaleFactor.Location = New System.Drawing.Point(67, 37)
+        Me.cmdGetHA_Pot_ScaleFactor.Location = New System.Drawing.Point(56, 41)
         Me.cmdGetHA_Pot_ScaleFactor.Margin = New System.Windows.Forms.Padding(4)
         Me.cmdGetHA_Pot_ScaleFactor.Name = "cmdGetHA_Pot_ScaleFactor"
-        Me.cmdGetHA_Pot_ScaleFactor.Size = New System.Drawing.Size(66, 44)
+        Me.cmdGetHA_Pot_ScaleFactor.Size = New System.Drawing.Size(53, 36)
         Me.cmdGetHA_Pot_ScaleFactor.TabIndex = 1
         Me.cmdGetHA_Pot_ScaleFactor.Text = "Get"
         Me.cmdGetHA_Pot_ScaleFactor.UseVisualStyleBackColor = True
@@ -362,7 +362,7 @@ Partial Class Form1
         Me.GroupBox2.Margin = New System.Windows.Forms.Padding(4)
         Me.GroupBox2.Name = "GroupBox2"
         Me.GroupBox2.Padding = New System.Windows.Forms.Padding(4)
-        Me.GroupBox2.Size = New System.Drawing.Size(330, 162)
+        Me.GroupBox2.Size = New System.Drawing.Size(276, 150)
         Me.GroupBox2.TabIndex = 12
         Me.GroupBox2.TabStop = False
         Me.GroupBox2.Text = "Pot Zero Reference"
@@ -370,7 +370,7 @@ Partial Class Form1
         'Label2
         '
         Me.Label2.AutoSize = True
-        Me.Label2.Location = New System.Drawing.Point(18, 106)
+        Me.Label2.Location = New System.Drawing.Point(9, 106)
         Me.Label2.Name = "Label2"
         Me.Label2.Size = New System.Drawing.Size(43, 20)
         Me.Label2.TabIndex = 9
@@ -378,27 +378,27 @@ Partial Class Form1
         '
         'txtDEC_Pot_ZeroRef
         '
-        Me.txtDEC_Pot_ZeroRef.Location = New System.Drawing.Point(140, 103)
+        Me.txtDEC_Pot_ZeroRef.Location = New System.Drawing.Point(116, 103)
         Me.txtDEC_Pot_ZeroRef.Name = "txtDEC_Pot_ZeroRef"
-        Me.txtDEC_Pot_ZeroRef.Size = New System.Drawing.Size(100, 27)
+        Me.txtDEC_Pot_ZeroRef.Size = New System.Drawing.Size(85, 27)
         Me.txtDEC_Pot_ZeroRef.TabIndex = 8
         '
         'cmdSetDEC_Pot_ZeroRef
         '
-        Me.cmdSetDEC_Pot_ZeroRef.Location = New System.Drawing.Point(247, 94)
+        Me.cmdSetDEC_Pot_ZeroRef.Location = New System.Drawing.Point(208, 98)
         Me.cmdSetDEC_Pot_ZeroRef.Margin = New System.Windows.Forms.Padding(4)
         Me.cmdSetDEC_Pot_ZeroRef.Name = "cmdSetDEC_Pot_ZeroRef"
-        Me.cmdSetDEC_Pot_ZeroRef.Size = New System.Drawing.Size(66, 44)
+        Me.cmdSetDEC_Pot_ZeroRef.Size = New System.Drawing.Size(53, 36)
         Me.cmdSetDEC_Pot_ZeroRef.TabIndex = 7
         Me.cmdSetDEC_Pot_ZeroRef.Text = "Set"
         Me.cmdSetDEC_Pot_ZeroRef.UseVisualStyleBackColor = True
         '
         'cmdGetDEC_Pot_ZeroRef
         '
-        Me.cmdGetDEC_Pot_ZeroRef.Location = New System.Drawing.Point(67, 94)
+        Me.cmdGetDEC_Pot_ZeroRef.Location = New System.Drawing.Point(56, 94)
         Me.cmdGetDEC_Pot_ZeroRef.Margin = New System.Windows.Forms.Padding(4)
         Me.cmdGetDEC_Pot_ZeroRef.Name = "cmdGetDEC_Pot_ZeroRef"
-        Me.cmdGetDEC_Pot_ZeroRef.Size = New System.Drawing.Size(66, 44)
+        Me.cmdGetDEC_Pot_ZeroRef.Size = New System.Drawing.Size(53, 36)
         Me.cmdGetDEC_Pot_ZeroRef.TabIndex = 6
         Me.cmdGetDEC_Pot_ZeroRef.Text = "Get"
         Me.cmdGetDEC_Pot_ZeroRef.UseVisualStyleBackColor = True
@@ -406,7 +406,7 @@ Partial Class Form1
         'Label1
         '
         Me.Label1.AutoSize = True
-        Me.Label1.Location = New System.Drawing.Point(15, 49)
+        Me.Label1.Location = New System.Drawing.Point(9, 49)
         Me.Label1.Name = "Label1"
         Me.Label1.Size = New System.Drawing.Size(35, 20)
         Me.Label1.TabIndex = 5
@@ -414,27 +414,27 @@ Partial Class Form1
         '
         'txtHA_Pot_ZeroRef
         '
-        Me.txtHA_Pot_ZeroRef.Location = New System.Drawing.Point(140, 46)
+        Me.txtHA_Pot_ZeroRef.Location = New System.Drawing.Point(116, 46)
         Me.txtHA_Pot_ZeroRef.Name = "txtHA_Pot_ZeroRef"
-        Me.txtHA_Pot_ZeroRef.Size = New System.Drawing.Size(100, 27)
+        Me.txtHA_Pot_ZeroRef.Size = New System.Drawing.Size(85, 27)
         Me.txtHA_Pot_ZeroRef.TabIndex = 4
         '
         'cmdSetHA_Pot_ZeroRef
         '
-        Me.cmdSetHA_Pot_ZeroRef.Location = New System.Drawing.Point(247, 37)
+        Me.cmdSetHA_Pot_ZeroRef.Location = New System.Drawing.Point(208, 41)
         Me.cmdSetHA_Pot_ZeroRef.Margin = New System.Windows.Forms.Padding(4)
         Me.cmdSetHA_Pot_ZeroRef.Name = "cmdSetHA_Pot_ZeroRef"
-        Me.cmdSetHA_Pot_ZeroRef.Size = New System.Drawing.Size(66, 44)
+        Me.cmdSetHA_Pot_ZeroRef.Size = New System.Drawing.Size(53, 36)
         Me.cmdSetHA_Pot_ZeroRef.TabIndex = 3
         Me.cmdSetHA_Pot_ZeroRef.Text = "Set"
         Me.cmdSetHA_Pot_ZeroRef.UseVisualStyleBackColor = True
         '
         'cmdGetHA_Pot_ZeroRef
         '
-        Me.cmdGetHA_Pot_ZeroRef.Location = New System.Drawing.Point(67, 37)
+        Me.cmdGetHA_Pot_ZeroRef.Location = New System.Drawing.Point(56, 37)
         Me.cmdGetHA_Pot_ZeroRef.Margin = New System.Windows.Forms.Padding(4)
         Me.cmdGetHA_Pot_ZeroRef.Name = "cmdGetHA_Pot_ZeroRef"
-        Me.cmdGetHA_Pot_ZeroRef.Size = New System.Drawing.Size(66, 44)
+        Me.cmdGetHA_Pot_ZeroRef.Size = New System.Drawing.Size(53, 36)
         Me.cmdGetHA_Pot_ZeroRef.TabIndex = 1
         Me.cmdGetHA_Pot_ZeroRef.Text = "Get"
         Me.cmdGetHA_Pot_ZeroRef.UseVisualStyleBackColor = True
@@ -445,41 +445,41 @@ Partial Class Form1
         Me.GroupBox4.Controls.Add(Me.cmdGetPositions)
         Me.GroupBox4.Controls.Add(Me.cmdDisablePositionSend)
         Me.GroupBox4.Controls.Add(Me.cmdEnablePositionSend)
-        Me.GroupBox4.Location = New System.Drawing.Point(346, 410)
+        Me.GroupBox4.Location = New System.Drawing.Point(330, 412)
         Me.GroupBox4.Margin = New System.Windows.Forms.Padding(4)
         Me.GroupBox4.Name = "GroupBox4"
         Me.GroupBox4.Padding = New System.Windows.Forms.Padding(4)
-        Me.GroupBox4.Size = New System.Drawing.Size(183, 180)
+        Me.GroupBox4.Size = New System.Drawing.Size(159, 180)
         Me.GroupBox4.TabIndex = 13
         Me.GroupBox4.TabStop = False
         Me.GroupBox4.Text = "Position String"
         '
         'cmdGetPositions
         '
-        Me.cmdGetPositions.Location = New System.Drawing.Point(22, 124)
+        Me.cmdGetPositions.Location = New System.Drawing.Point(8, 126)
         Me.cmdGetPositions.Margin = New System.Windows.Forms.Padding(4)
         Me.cmdGetPositions.Name = "cmdGetPositions"
-        Me.cmdGetPositions.Size = New System.Drawing.Size(144, 40)
+        Me.cmdGetPositions.Size = New System.Drawing.Size(139, 40)
         Me.cmdGetPositions.TabIndex = 2
         Me.cmdGetPositions.Text = "Get HA, Dec"
         Me.cmdGetPositions.UseVisualStyleBackColor = True
         '
         'cmdDisablePositionSend
         '
-        Me.cmdDisablePositionSend.Location = New System.Drawing.Point(22, 76)
+        Me.cmdDisablePositionSend.Location = New System.Drawing.Point(8, 78)
         Me.cmdDisablePositionSend.Margin = New System.Windows.Forms.Padding(4)
         Me.cmdDisablePositionSend.Name = "cmdDisablePositionSend"
-        Me.cmdDisablePositionSend.Size = New System.Drawing.Size(144, 40)
+        Me.cmdDisablePositionSend.Size = New System.Drawing.Size(139, 40)
         Me.cmdDisablePositionSend.TabIndex = 1
         Me.cmdDisablePositionSend.Text = "Disable Send"
         Me.cmdDisablePositionSend.UseVisualStyleBackColor = True
         '
         'cmdEnablePositionSend
         '
-        Me.cmdEnablePositionSend.Location = New System.Drawing.Point(22, 28)
+        Me.cmdEnablePositionSend.Location = New System.Drawing.Point(8, 30)
         Me.cmdEnablePositionSend.Margin = New System.Windows.Forms.Padding(4)
         Me.cmdEnablePositionSend.Name = "cmdEnablePositionSend"
-        Me.cmdEnablePositionSend.Size = New System.Drawing.Size(144, 40)
+        Me.cmdEnablePositionSend.Size = New System.Drawing.Size(139, 40)
         Me.cmdEnablePositionSend.TabIndex = 0
         Me.cmdEnablePositionSend.Text = "Enable Send"
         Me.cmdEnablePositionSend.UseVisualStyleBackColor = True
@@ -489,11 +489,11 @@ Partial Class Form1
         Me.GroupBox6.BackColor = System.Drawing.SystemColors.GradientActiveCaption
         Me.GroupBox6.Controls.Add(Me.cmdFind_DEC_Opto)
         Me.GroupBox6.Controls.Add(Me.cmdFind_HA_Opto)
-        Me.GroupBox6.Location = New System.Drawing.Point(938, 8)
+        Me.GroupBox6.Location = New System.Drawing.Point(837, 21)
         Me.GroupBox6.Margin = New System.Windows.Forms.Padding(4)
         Me.GroupBox6.Name = "GroupBox6"
         Me.GroupBox6.Padding = New System.Windows.Forms.Padding(4)
-        Me.GroupBox6.Size = New System.Drawing.Size(195, 151)
+        Me.GroupBox6.Size = New System.Drawing.Size(184, 151)
         Me.GroupBox6.TabIndex = 14
         Me.GroupBox6.TabStop = False
         Me.GroupBox6.Text = "Find Optos"
@@ -601,11 +601,11 @@ Partial Class Form1
         Me.GroupBox7.BackColor = System.Drawing.SystemColors.GradientActiveCaption
         Me.GroupBox7.Controls.Add(Me.cmdSync_DEC_Pot)
         Me.GroupBox7.Controls.Add(Me.cmdSync_HA_Pot)
-        Me.GroupBox7.Location = New System.Drawing.Point(938, 178)
+        Me.GroupBox7.Location = New System.Drawing.Point(837, 191)
         Me.GroupBox7.Margin = New System.Windows.Forms.Padding(4)
         Me.GroupBox7.Name = "GroupBox7"
         Me.GroupBox7.Padding = New System.Windows.Forms.Padding(4)
-        Me.GroupBox7.Size = New System.Drawing.Size(195, 178)
+        Me.GroupBox7.Size = New System.Drawing.Size(191, 178)
         Me.GroupBox7.TabIndex = 16
         Me.GroupBox7.TabStop = False
         Me.GroupBox7.Text = "Sync to Optos"
@@ -615,7 +615,7 @@ Partial Class Form1
         Me.cmdSync_DEC_Pot.Location = New System.Drawing.Point(10, 97)
         Me.cmdSync_DEC_Pot.Margin = New System.Windows.Forms.Padding(6, 5, 6, 5)
         Me.cmdSync_DEC_Pot.Name = "cmdSync_DEC_Pot"
-        Me.cmdSync_DEC_Pot.Size = New System.Drawing.Size(174, 61)
+        Me.cmdSync_DEC_Pot.Size = New System.Drawing.Size(171, 61)
         Me.cmdSync_DEC_Pot.TabIndex = 17
         Me.cmdSync_DEC_Pot.Text = "Dec Zero Ref Pot to Dec Opto"
         Me.cmdSync_DEC_Pot.UseVisualStyleBackColor = True
@@ -625,7 +625,7 @@ Partial Class Form1
         Me.cmdSync_HA_Pot.Location = New System.Drawing.Point(10, 29)
         Me.cmdSync_HA_Pot.Margin = New System.Windows.Forms.Padding(6, 5, 6, 5)
         Me.cmdSync_HA_Pot.Name = "cmdSync_HA_Pot"
-        Me.cmdSync_HA_Pot.Size = New System.Drawing.Size(174, 59)
+        Me.cmdSync_HA_Pot.Size = New System.Drawing.Size(171, 59)
         Me.cmdSync_HA_Pot.TabIndex = 16
         Me.cmdSync_HA_Pot.Text = "HA Zero Ref Pot to HA Opto"
         Me.cmdSync_HA_Pot.UseVisualStyleBackColor = True
@@ -637,7 +637,7 @@ Partial Class Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(11.0!, 20.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(1152, 605)
+        Me.ClientSize = New System.Drawing.Size(1036, 605)
         Me.Controls.Add(Me.GroupBox7)
         Me.Controls.Add(Me.TabControl1)
         Me.Controls.Add(Me.GroupBox6)
@@ -651,7 +651,7 @@ Partial Class Form1
         Me.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.2!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Margin = New System.Windows.Forms.Padding(6, 5, 6, 5)
         Me.Name = "Form1"
-        Me.Text = "Peripheral Controller Application   ver 2"
+        Me.Text = "Peripheral Controller Application   ver 3"
         Me.GroupBox1.ResumeLayout(False)
         Me.Frame2.ResumeLayout(False)
         Me.Frame3.ResumeLayout(False)

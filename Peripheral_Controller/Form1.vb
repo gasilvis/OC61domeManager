@@ -275,12 +275,13 @@
             cmd &= s.Substring(0, s.Length - 2)
             s = String.Format(" ALT{0:+000.0;-000.0}", dALT)
             cmd &= s.Substring(0, s.Length - 2)
+            If Double.IsNaN(dAZ) Then dAZ = 0 ' not sure why this happens
             s = String.Format(" AZ{0:+000.0;-000.0}", dAZ)
-            cmd &= s.Substring(0, s.Length - 2)
-            SerialPort2.Write(cmd & vbCr) ' send upstream
-            List1.AppendText("fromPC: " & cmd & vbCrLf) ' display msg to list
-            SerialPort2.Write(cmd & vbCr) ' send upstream 
-        End If
+                cmd &= s.Substring(0, s.Length - 2)
+                SerialPort2.Write(cmd & vbCr) ' send upstream
+                List1.AppendText("fromPC: " & cmd & vbCrLf) ' display msg to list
+                SerialPort2.Write(cmd & vbCr) ' send upstream 
+            End If
     End Sub
 
     ' data back from the PC

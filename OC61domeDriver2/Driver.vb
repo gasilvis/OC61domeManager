@@ -125,11 +125,13 @@ Public Class Dome
 
     End Sub
 
-    ' not in use
+    ' not in use; didn't sort out the issue of being in another thread
     Public Sub OnPCstatusUpdate(ByVal sender As Object, ByVal e As System.Timers.ElapsedEventArgs)
         ' runs every second
         TL.LogMessage("PCStatusTimer", "checking shutter status")
         PCStatusUpdateCalled = True ' signal for ShutterStatus that this timer is calling, so do its job
+        ' are we in a thread, needing to invoke?
+        '   would need to create a Sub that calls the Function ShutterStatus() if using Invoke.
         domeShutterState = ShutterStatus()
         PCStatusUpdateCalled = False
         If domeShutterState <> ShutterState.shutterClosing And domeShutterState <> ShutterState.shutterOpening Then
@@ -231,12 +233,6 @@ Public Class Dome
         Return "ran out of time"
 
     End Function
-
-    ' commands to be sent to the Peripheral Controller
-    'Public Sub PCcommandBlind(ByVal Command As String)
-    '   CheckConnected("PCCommandBlind")
-    '   SharedResources.SendMessage(Command)
-    'End Sub
 
     ' CommandBlind taken over for use with the Peripheral Controller
     Public Sub CommandBlind(ByVal Command As String, Optional ByVal Raw As Boolean = False) Implements IDomeV2.CommandBlind
@@ -515,7 +511,7 @@ Public Class Dome
         TL.LogMessage("CloseShutter", "Shutter close requested: close mirror cover")
         domeShutterState = ShutterState.shutterClosing
         CommandBlind("*CLOSE_MIRROR_COVER" & vbCr)
-        '' Poll the PC to move the close process forward
+        '' Poll the PC to move the close process forward  doesn't work
         'PCStatusUpdateCounter = 20
         'PCStatusUpdateTimer.Enabled = True
     End Sub
@@ -524,7 +520,7 @@ Public Class Dome
         TL.LogMessage("OpenShutter", "Shutter open requested; open child shutter")
         domeShutterState = ShutterState.shutterOpening
         childDome.OpenShutter()
-        '' Poll the PC to move the open process forward
+        '' Poll the PC to move the open process forward   doesn't work
         'PCStatusUpdateCounter = 20
         'PCStatusUpdateTimer.Enabled = True
     End Sub
