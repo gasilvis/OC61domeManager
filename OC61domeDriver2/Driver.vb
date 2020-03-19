@@ -119,9 +119,9 @@ Public Class Dome
 
         OC61ActionList.Add("ScopePosition")
         OC61ActionList.Add("ADCvalues")
+        OC61ActionList.Add("PotParms")
 
         TL.LogMessage("Dome", "Completed initialisation")
-
 
     End Sub
 
@@ -161,7 +161,7 @@ Public Class Dome
     Public Sub SetupDialog() Implements IDomeV2.SetupDialog
         ' consider only showing the setup dialog if not connected
         ' or call a different dialog if connected
-        If IsConnected And childDome.Connected Then
+        If IsConnected Then
             System.Windows.Forms.MessageBox.Show("Already connected, just press OK")
         End If
 
@@ -203,6 +203,17 @@ Public Class Dome
                 ret = Listener({"HA_ABS"})
                 If ret = "" Then ret = "timed out" 'Throw New TimeoutException
                 Return ret
+            Case "potparms"
+                ' get/send HA/Dec zero_ref_val/scale factor
+                ' ActionParameter needs to properly formatted for the PC
+                CommandBlind("*" + ActionParameters & vbCr)
+                If InStr(ActionParameters, "SET") Then
+                    Return "" ' no return for set commands
+                Else
+                    ret = Listener({"HA Z", "HA S", "DEC Z", "DEC S"})
+                    If ret = "" Then ret = "timed out" 'Throw New TimeoutException
+                    Return ret
+                End If
             Case Else
                 Return childDome.Action(ActionName, ActionParameters)
         End Select
@@ -274,7 +285,7 @@ Public Class Dome
             Return IsConnected
         End Get
         Set(value As Boolean)
-            TL.LogMessage("Connected Set", value.ToString())
+            TL.LogMessage("Trying to set Connected to ", value.ToString())
             If value = IsConnected Then
                 Return
             End If
@@ -653,11 +664,13 @@ Public Class Dome
             If Not childDome.Connected Then
                 TL.LogMessage("IsConnected", "childDome not connected.")
                 connectedState = False
-            End If
-            ' is the serial port to the periperal controller connected?
-            If Not SharedResources.Connected Then
+                SharedResources.Connected = False ' both should be false
+                'End If
+                ' is the serial port to the periperal controller connected?
+            ElseIf Not SharedResources.Connected Then
                 TL.LogMessage("IsConnected", "Serial port to Peripheral Controller not collected.")
                 connectedState = False
+                childDome.Connected = False ' both should be false
             End If
 
             Return connectedState

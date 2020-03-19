@@ -26,6 +26,14 @@ Partial Class Form1
         Me.List1 = New System.Windows.Forms.TextBox()
         Me.GroupBox1 = New System.Windows.Forms.GroupBox()
         Me.GroupBox4 = New System.Windows.Forms.GroupBox()
+        Me.TextBoxDec_Scale = New System.Windows.Forms.TextBox()
+        Me.TextBoxHA_Scale = New System.Windows.Forms.TextBox()
+        Me.TextBoxHA_Zero = New System.Windows.Forms.TextBox()
+        Me.TextBoxDec_Zero = New System.Windows.Forms.TextBox()
+        Me.Label23 = New System.Windows.Forms.Label()
+        Me.Label22 = New System.Windows.Forms.Label()
+        Me.Label21 = New System.Windows.Forms.Label()
+        Me.Label20 = New System.Windows.Forms.Label()
         Me.Label18 = New System.Windows.Forms.Label()
         Me.Label17 = New System.Windows.Forms.Label()
         Me.Label14 = New System.Windows.Forms.Label()
@@ -62,7 +70,7 @@ Partial Class Form1
         Me.List1.Location = New System.Drawing.Point(12, 42)
         Me.List1.Multiline = True
         Me.List1.Name = "List1"
-        Me.List1.Size = New System.Drawing.Size(372, 486)
+        Me.List1.Size = New System.Drawing.Size(372, 516)
         Me.List1.TabIndex = 9
         '
         'GroupBox1
@@ -73,7 +81,7 @@ Partial Class Form1
         Me.GroupBox1.Controls.Add(Me.GroupBox2)
         Me.GroupBox1.Location = New System.Drawing.Point(399, 42)
         Me.GroupBox1.Name = "GroupBox1"
-        Me.GroupBox1.Size = New System.Drawing.Size(462, 486)
+        Me.GroupBox1.Size = New System.Drawing.Size(462, 516)
         Me.GroupBox1.TabIndex = 10
         Me.GroupBox1.TabStop = False
         Me.GroupBox1.Text = "responses"
@@ -81,6 +89,14 @@ Partial Class Form1
         'GroupBox4
         '
         Me.GroupBox4.BackColor = System.Drawing.SystemColors.Window
+        Me.GroupBox4.Controls.Add(Me.TextBoxDec_Scale)
+        Me.GroupBox4.Controls.Add(Me.TextBoxHA_Scale)
+        Me.GroupBox4.Controls.Add(Me.TextBoxHA_Zero)
+        Me.GroupBox4.Controls.Add(Me.TextBoxDec_Zero)
+        Me.GroupBox4.Controls.Add(Me.Label23)
+        Me.GroupBox4.Controls.Add(Me.Label22)
+        Me.GroupBox4.Controls.Add(Me.Label21)
+        Me.GroupBox4.Controls.Add(Me.Label20)
         Me.GroupBox4.Controls.Add(Me.Label18)
         Me.GroupBox4.Controls.Add(Me.Label17)
         Me.GroupBox4.Controls.Add(Me.Label14)
@@ -93,10 +109,78 @@ Partial Class Form1
         Me.GroupBox4.Controls.Add(Me.Label10)
         Me.GroupBox4.Location = New System.Drawing.Point(18, 305)
         Me.GroupBox4.Name = "GroupBox4"
-        Me.GroupBox4.Size = New System.Drawing.Size(421, 126)
+        Me.GroupBox4.Size = New System.Drawing.Size(421, 194)
         Me.GroupBox4.TabIndex = 4
         Me.GroupBox4.TabStop = False
         Me.GroupBox4.Text = "position"
+        '
+        'TextBoxDec_Scale
+        '
+        Me.TextBoxDec_Scale.Location = New System.Drawing.Point(248, 159)
+        Me.TextBoxDec_Scale.Name = "TextBoxDec_Scale"
+        Me.TextBoxDec_Scale.Size = New System.Drawing.Size(100, 22)
+        Me.TextBoxDec_Scale.TabIndex = 20
+        Me.TextBoxDec_Scale.Text = "512"
+        '
+        'TextBoxHA_Scale
+        '
+        Me.TextBoxHA_Scale.Location = New System.Drawing.Point(122, 159)
+        Me.TextBoxHA_Scale.Name = "TextBoxHA_Scale"
+        Me.TextBoxHA_Scale.Size = New System.Drawing.Size(100, 22)
+        Me.TextBoxHA_Scale.TabIndex = 19
+        Me.TextBoxHA_Scale.Text = "512"
+        '
+        'TextBoxHA_Zero
+        '
+        Me.TextBoxHA_Zero.Location = New System.Drawing.Point(122, 131)
+        Me.TextBoxHA_Zero.Name = "TextBoxHA_Zero"
+        Me.TextBoxHA_Zero.Size = New System.Drawing.Size(100, 22)
+        Me.TextBoxHA_Zero.TabIndex = 18
+        Me.TextBoxHA_Zero.Text = "512"
+        '
+        'TextBoxDec_Zero
+        '
+        Me.TextBoxDec_Zero.Location = New System.Drawing.Point(248, 131)
+        Me.TextBoxDec_Zero.Name = "TextBoxDec_Zero"
+        Me.TextBoxDec_Zero.Size = New System.Drawing.Size(100, 22)
+        Me.TextBoxDec_Zero.TabIndex = 17
+        Me.TextBoxDec_Zero.Text = "512"
+        '
+        'Label23
+        '
+        Me.Label23.AutoSize = True
+        Me.Label23.Location = New System.Drawing.Point(17, 164)
+        Me.Label23.Name = "Label23"
+        Me.Label23.Size = New System.Drawing.Size(81, 17)
+        Me.Label23.TabIndex = 16
+        Me.Label23.Text = "scale factor"
+        '
+        'Label22
+        '
+        Me.Label22.AutoSize = True
+        Me.Label22.Location = New System.Drawing.Point(17, 135)
+        Me.Label22.Name = "Label22"
+        Me.Label22.Size = New System.Drawing.Size(58, 17)
+        Me.Label22.TabIndex = 15
+        Me.Label22.Text = "zero val"
+        '
+        'Label21
+        '
+        Me.Label21.AutoSize = True
+        Me.Label21.Location = New System.Drawing.Point(268, 112)
+        Me.Label21.Name = "Label21"
+        Me.Label21.Size = New System.Drawing.Size(33, 17)
+        Me.Label21.TabIndex = 14
+        Me.Label21.Text = "Dec"
+        '
+        'Label20
+        '
+        Me.Label20.AutoSize = True
+        Me.Label20.Location = New System.Drawing.Point(143, 112)
+        Me.Label20.Name = "Label20"
+        Me.Label20.Size = New System.Drawing.Size(27, 17)
+        Me.Label20.TabIndex = 13
+        Me.Label20.Text = "HA"
         '
         'Label18
         '
@@ -322,12 +406,12 @@ Partial Class Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(879, 549)
+        Me.ClientSize = New System.Drawing.Size(879, 570)
         Me.Controls.Add(Me.ComboBox1)
         Me.Controls.Add(Me.GroupBox1)
         Me.Controls.Add(Me.List1)
         Me.Name = "Form1"
-        Me.Text = "Peripheral Controller Emulator  ver 1"
+        Me.Text = "Peripheral Controller Emulator  ver 3"
         Me.GroupBox1.ResumeLayout(False)
         Me.GroupBox4.ResumeLayout(False)
         Me.GroupBox4.PerformLayout()
@@ -367,4 +451,12 @@ Partial Class Form1
     Friend WithEvents Label14 As Label
     Friend WithEvents Label17 As Label
     Friend WithEvents Label18 As Label
+    Friend WithEvents TextBoxDec_Scale As TextBox
+    Friend WithEvents TextBoxHA_Scale As TextBox
+    Friend WithEvents TextBoxHA_Zero As TextBox
+    Friend WithEvents TextBoxDec_Zero As TextBox
+    Friend WithEvents Label23 As Label
+    Friend WithEvents Label22 As Label
+    Friend WithEvents Label21 As Label
+    Friend WithEvents Label20 As Label
 End Class

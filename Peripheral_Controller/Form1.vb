@@ -20,17 +20,22 @@
     End Sub
 
     Private Sub Form1_FormClosing(ByVal sender As System.Object, ByVal e As System.Windows.Forms.FormClosingEventArgs) Handles MyBase.FormClosing
-        If IsConnected Then
-            If TabControl1.SelectedIndex = 0 Then ' serial port
-                SerialPort1.Close()
-            Else ' driver
-                driver.Connected = False
-                driver.Dispose()
-                driver = Nothing
+        If Windows.Forms.DialogResult.No = MessageBox.Show("This app should be left running." + vbCrLf + "Are you sure you want to exit?", "PCapp", MessageBoxButtons.YesNo) Then
+            e.Cancel = True
+        Else
+
+            If IsConnected Then
+                If TabControl1.SelectedIndex = 0 Then ' serial port
+                    SerialPort1.Close()
+                    SerialPort2.Close()
+                Else ' driver
+                    driver.Connected = False
+                    driver.Dispose()
+                    driver = Nothing
+                End If
             End If
+            ' the settings are saved automatically when this application is closed.
         End If
-        SerialPort2.Close()
-        ' the settings are saved automatically when this application is closed.
     End Sub
 
     ''' This event is where the driver is choosen. The device ID will be saved in the settings.
@@ -129,7 +134,7 @@
         Else
             Dim ret As Integer = driver.ShutterStatus()
             ' TODO this needs to be a function, with a return   
-            List1.AppendText("shutter status is " & ret & vbCrLf)
+            ShowMsg("shutter status is " & ret & vbCrLf)
         End If
     End Sub
 
@@ -161,9 +166,9 @@
         If TabControl1.SelectedIndex = 0 Then ' serial port
             sendPCcmd("*SEND_POSITION" & vbCr)
         Else 'driver
-            List1.AppendText("asking for HA&Dec" & vbCrLf)
+            ShowMsg("asking for HA&Dec" & vbCrLf)
             Dim ret As String = driver.Action("ScopePosition", "")
-            List1.AppendText("spcPC: " & ret & vbCrLf)
+            ShowMsg("spcPC: " & ret & vbCrLf)
         End If
     End Sub
 
@@ -171,20 +176,34 @@
         If TabControl1.SelectedIndex = 0 Then ' serial port
             sendPCcmd("*SEND_ADC_VALS" & vbCr)
         Else ' driver
-            List1.AppendText("asking for ADC values" & vbCrLf)
+            ShowMsg("asking for ADC values" & vbCrLf)
             Dim ret As String = driver.Action("ADCvalues", "")
-            List1.AppendText("spcPC: " & ret & vbCrLf)
+            ShowMsg("spcPC: " & ret & vbCrLf)
         End If
     End Sub
 
     Private Sub cmdGetHA_Pot_ZeroRef_Click(sender As Object, e As EventArgs) Handles cmdGetHA_Pot_ZeroRef.Click
-        sendPCcmd("*SEND_HA_ZERO_REF_VAL" & vbCr)
+        If TabControl1.SelectedIndex = 0 Then ' serial port
+            sendPCcmd("*SEND_HA_ZERO_REF_VAL" & vbCr)
+        Else 'driver
+            ShowMsg("asking for HA Pot zeroref" & vbCrLf)
+            Dim ret As String = driver.Action("PotParms", "SEND_HA_ZERO_REF_VAL")
+            ShowMsg("spcPC: " & ret & vbCrLf)
+            txtHA_Pot_ZeroRef.Text = Mid(ret, 18)
+
+            'ElseIf cmd.Substring(0, 21) = "HA SCALE FACTOR VAL: " Then
+            'txtHA_Pot_ScaleFactor.Text = Mid(cmd, 22)
+            'ElseIf cmd.Substring(0, 18) = "DEC ZERO REF VAL: " Then
+            'txtDEC_Pot_ZeroRef.Text = Mid(cmd, 19)
+            'ElseIf cmd.Substring(0, 22) = "DEC SCALE FACTOR VAL: " Then
+            'txtDEC_Pot_ScaleFactor.Text = Mid(cmd, 23)
+        End If
     End Sub
 
     Private Sub cmdSetHA_Pot_ZeroRef_Click(sender As Object, e As EventArgs) Handles cmdSetHA_Pot_ZeroRef.Click
         If txtHA_Pot_ZeroRef.Text = "" Then Exit Sub
         If Val(txtHA_Pot_ZeroRef.Text) = 0 Then Exit Sub
-        sendPCcmd("*SET_HA_ZERO_REF_VAL" & txtHA_Pot_ZeroRef.Text & vbCr)
+        sendPCcmd("*SET_HA_ZERO_REF_VAL" & txtHA_Pot_ZeroRef.Text.Trim() & vbCr)
     End Sub
 
     Private Sub cmdGetDEC_Pot_ZeroRef_Click(sender As Object, e As EventArgs) Handles cmdGetDEC_Pot_ZeroRef.Click
@@ -194,7 +213,7 @@
     Private Sub cmdSetDEC_Pot_ZeroRef_Click(sender As Object, e As EventArgs) Handles cmdSetDEC_Pot_ZeroRef.Click
         If txtDEC_Pot_ZeroRef.Text = "" Then Exit Sub
         If Val(txtDEC_Pot_ZeroRef.Text) = 0 Then Exit Sub
-        sendPCcmd("*SET_DEC_ZERO_REF_VAL" & txtDEC_Pot_ZeroRef.Text & vbCr)
+        sendPCcmd("*SET_DEC_ZERO_REF_VAL" & txtDEC_Pot_ZeroRef.Text.Trim() & vbCr)
     End Sub
 
     Private Sub cmdGetHA_Pot_ScaleFactor_Click(sender As Object, e As EventArgs) Handles cmdGetHA_Pot_ScaleFactor.Click
@@ -204,7 +223,7 @@
     Private Sub cmdSetHA_Pot_ScaleFactor_Click(sender As Object, e As EventArgs) Handles cmdSetHA_Pot_ScaleFactor.Click
         If txtHA_Pot_ScaleFactor.Text = "" Then Exit Sub
         If Val(txtHA_Pot_ScaleFactor.Text) = 0 Then Exit Sub
-        sendPCcmd("*SET_HA_SCALE_FACTOR" & txtHA_Pot_ScaleFactor.Text & vbCr)
+        sendPCcmd("*SET_HA_SCALE_FACTOR" & txtHA_Pot_ScaleFactor.Text.Trim() & vbCr)
     End Sub
 
     Private Sub cmdGetDEC_Pot_ScaleFactor_Click(sender As Object, e As EventArgs) Handles cmdGetDEC_Pot_ScaleFactor.Click
@@ -214,7 +233,7 @@
     Private Sub cmdSetDEC_Pot_ScaleFactor_Click(sender As Object, e As EventArgs) Handles cmdSetDEC_Pot_ScaleFactor.Click
         If txtDEC_Pot_ScaleFactor.Text = "" Then Exit Sub
         If Val(txtDEC_Pot_ScaleFactor.Text) = 0 Then Exit Sub
-        sendPCcmd("*SET_DEC_SCALE_FACTOR" & txtDEC_Pot_ScaleFactor.Text & vbCr)
+        sendPCcmd("*SET_DEC_SCALE_FACTOR" & txtDEC_Pot_ScaleFactor.Text.Trim() & vbCr)
     End Sub
 
     Private Sub cmdSync_HA_Pot_Click(sender As Object, e As EventArgs) Handles cmdSync_HA_Pot.Click
@@ -234,10 +253,16 @@
     End Sub
 
 #End Region
+    Private Sub ShowMsg(msg As String)
+        List1.AppendText(msg)
+        ' append to log file, local time stamp
+        My.Computer.FileSystem.WriteAllText("C:\Data\PClog.txt", DateTime.Now.ToString("s") + " " + msg, True)
+        ' eg   2020-03-17T11:19:04 fromPC: HA+004 DEC-005
+    End Sub
 
     ' from UI buttons (or..) to PC
     Private Sub sendPCcmd(cmd As String)
-        List1.AppendText("toPC: " & cmd & vbLf) ' show what we are sending to the PC
+        ShowMsg("toPC: " & cmd & vbLf) ' show what we are sending to the PC
         If TabControl1.SelectedIndex = 0 Then ' serial port
             SerialPort1.Write(cmd)
         Else ' driver
@@ -246,48 +271,101 @@
     End Sub
 
     Private Const dLAT As Double = -43.9856 '-43:59:08
-    Private Const dLONG As Double = 170.465 ' 170:27:54
+    Private Const dLONG As Double = 170.465 ' 170.465 ' 170:27:54  East   (Mashnee is -70.633 )
+
+    Private Function SiderealTime() As Double
+        ' local sidereal time now, here, in degrees
+        ' https://www.aa.quae.nl/en/reken/sterrentijd.html#1
+        'θ≡L0+L1ΔJ+L2ΔJ2+L3ΔJ3−lw(mod360°)
+        Dim L0 As Double = 99.967794687 '°
+        Dim L1 As Double = 360.985647366286 '°
+        Dim L2 As Double = 0.0000000000002907879 '°
+        Dim L3 As Double = -5.302E-22 '°
+        Dim lw As Double = -dLONG
+        Dim jdts As TimeSpan = DateTime.UtcNow.Subtract(New DateTime(2000, 1, 1))
+        Dim jd As Double = jdts.TotalDays
+        Dim sid As Double = ((L0 + (L1 + (L2 + L3 * jd) * jd) * jd) - lw) Mod 360
+        Return sid
+
+    End Function
 
     ' Answer back from PC
     Private Sub processPCmsg(cmd As String)
         ' maintain states
         ' augmented too
         ' pass on to com31
-        List1.AppendText("fromPC: " & cmd & vbCrLf) ' display msg to list
+        ShowMsg("fromPC: " & cmd & vbCrLf) ' display msg to list
         SerialPort2.Write(cmd & vbCr) ' send upstream 
-        ' secondary messages for upstream?
+        ' secondary messages for upstream? Or handling for the gui
         If (cmd.Substring(0, 2) = "HA" And cmd.Length = 14) Then ' eg  'HA+012 DEC-015'
             ' pass on, but send a second, better, signal with Dec corrected and Alt and Az
             Dim dHA As Double = CDbl(cmd.Substring(2, 4))
             Dim dDec As Double = CDbl(cmd.Substring(10, 4))
+            ' correct dec to 90 to -90
             If dDec > 90 Then
                 dDec = 180 - dDec
             ElseIf dDec < -90 Then
-                dDec = -180 - dDec
+                dDec = (-180) - dDec
             End If
-            Dim toRads As Double = Math.Asin(1) / 90 ' pi / 180
-            Dim DEC As Double = dDec * toRads
-            Dim LAT As Double = dLAT * toRads
-            Dim HA As Double = dHA * toRads
-            Dim ALT = Math.Asin(Math.Sin(DEC) * Math.Sin(LAT) + Math.Cos(DEC) * Math.Cos(LAT) * Math.Cos(HA))
-            Dim AZ = Math.Acos((Math.Sin(DEC) - Math.Sin(ALT) * Math.Sin(LAT)) / (Math.Cos(ALT) * Math.Cos(LAT)))
-            If Math.Sin(HA) < 0 Then AZ = (360 * toRads) - AZ ' this makes AZ==0 be South
-            Dim dALT As Double = ALT / toRads
-            Dim dAZ As Double = AZ / toRads
+            'Dim toRads As Double = Math.Asin(1) / 90 ' pi / 180
+            'Dim DEC As Double = dDec * toRads
+            'Dim LAT As Double = dLAT * toRads
+            'Dim HA As Double = dHA * toRads
+            'Dim ALT = Math.Asin(Math.Sin(DEC) * Math.Sin(LAT) + Math.Cos(DEC) * Math.Cos(LAT) * Math.Cos(HA))
+            'Dim AZ = Math.Acos((Math.Sin(DEC) - Math.Sin(ALT) * Math.Sin(LAT)) / (Math.Cos(ALT) * Math.Cos(LAT)))
+            ''If Math.Sin(HA) < 0 Then AZ = (360 * toRads) - AZ ' this makes AZ==0 be South
+            'Dim dALT As Double = ALT / toRads
+            'Dim dAZ As Double = AZ / toRads
+
+            ' https://idlastro.gsfc.nasa.gov/ftp/pro/astro/hadec2altaz.pro
+            Dim d2r As Double = Math.Asin(1) / 90 ' pi/180     
+            Dim sh As Double = Math.Sin(dHA * d2r)
+            Dim ch As Double = Math.Cos(dHA * d2r)
+            Dim sd As Double = Math.Sin(dDec * d2r)
+            Dim cd As Double = Math.Cos(dDec * d2r)
+            Dim sl As Double = Math.Sin(dLAT * d2r)
+            Dim cl As Double = Math.Cos(dLAT * d2r)
+
+            Dim x As Double = -ch * cd * sl + sd * cl
+            Dim y As Double = -sh * cd
+            Dim z As Double = ch * cd * cl + sd * sl
+            Dim r As Double = Math.Sqrt(x ^ 2 + y ^ 2)
+            'now get Alt, Az
+            Dim dAZ As Double = Math.Atan(y / x) / d2r
+            Dim dALT As Double = Math.Atan(z / r) / d2r
+            ' correct for negative AZ
+            If dAZ < 0 Then dAZ += 360
+            'Dim dLST = Date.Now.ToUniversalTime().Add(TimeSpan.FromHours(dLAT / 15D)) ' toSiderealTime
+            Dim dLST As Double = SiderealTime()
             Dim s As String
             s = String.Format("True HA{0:+000.0;-000.0}", dHA) ' to allow -000
-            cmd = s.Substring(0, s.Length - 2) ' clip tail so -0.00 is possible
+            cmd = s 's.Substring(0, s.Length - 2) ' clip tail
             s = String.Format(" DEC{0:+000.0;-000.0}", dDec)
-            cmd &= s.Substring(0, s.Length - 2)
+            cmd &= s 's.Substring(0, s.Length - 2)
+            'ShowMsg("fromPC: " & cmd & vbCrLf) ' display msg to list
+            'SerialPort2.Write(cmd & vbCr) ' send upstream 
             s = String.Format(" ALT{0:+000.0;-000.0}", dALT)
-            cmd &= s.Substring(0, s.Length - 2)
+            cmd &= s 's.Substring(0, s.Length - 2)
             If Double.IsNaN(dAZ) Then dAZ = 0 ' not sure why this happens
             s = String.Format(" AZ{0:+000.0;-000.0}", dAZ)
-                cmd &= s.Substring(0, s.Length - 2)
-                SerialPort2.Write(cmd & vbCr) ' send upstream
-                List1.AppendText("fromPC: " & cmd & vbCrLf) ' display msg to list
-                SerialPort2.Write(cmd & vbCr) ' send upstream 
-            End If
+            cmd &= s 's.Substring(0, s.Length - 2)
+            'ShowMsg("fromPC: " & cmd & vbCrLf) ' display msg to list
+            'SerialPort2.Write(cmd & vbCr) ' send upstream 
+            s = String.Format(" LST{0:+000.0;-000.0}", dLST)
+            cmd &= s 's.Substring(0, s.Length - 2)
+            s = String.Format(" RA{0:+000.0;-000.0}", dLST - dHA)
+            cmd &= s 's.Substring(0, s.Length - 2)
+            ShowMsg("fromPC: " & cmd & vbCrLf) ' display msg to list
+            SerialPort2.Write(cmd & vbCr) ' send upstream 
+        ElseIf cmd.Length > 18 AndAlso cmd.Substring(0, 17) = "HA ZERO REF VAL: " Then
+            txtHA_Pot_ZeroRef.Text = Mid(cmd, 18)
+        ElseIf cmd.Length > 22 AndAlso cmd.Substring(0, 21) = "HA SCALE FACTOR VAL: " Then
+            txtHA_Pot_ScaleFactor.Text = Mid(cmd, 22)
+        ElseIf cmd.Length > 19 AndAlso cmd.Substring(0, 18) = "DEC ZERO REF VAL: " Then
+            txtDEC_Pot_ZeroRef.Text = Mid(cmd, 19)
+        ElseIf cmd.Length > 23 AndAlso cmd.Substring(0, 22) = "DEC SCALE FACTOR VAL: " Then
+                txtDEC_Pot_ScaleFactor.Text = Mid(cmd, 23)
+        End If
     End Sub
 
     ' data back from the PC
@@ -312,5 +390,6 @@
         Catch
         End Try
     End Sub
+
 
 End Class

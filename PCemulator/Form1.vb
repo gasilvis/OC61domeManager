@@ -1,4 +1,8 @@
 ﻿Public Class Form1 ' Peripheral Controller Emulator
+    Private HA_Pot_ZeroReference As String = "512" ' nominal is 512
+    Private DEC_Pot_ZeroReference As String = "512"
+    Private HA_Pot_ScaleFactor As String = "0.381" '0.38136 ' about 23" per tic
+    Private DEC_Pot_ScaleFactor As String = "0.398" '0.39823
 
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         ' load comport load: Show all available COM ports.
@@ -6,6 +10,11 @@
             ComboBox1.Items.Add(sp)
         Next
         ComboBox1.SelectedIndex = ComboBox1.FindStringExact("COM20")
+        TextBoxHA_Zero.Text = HA_Pot_ZeroReference
+        TextBoxHA_Scale.Text = HA_Pot_ScaleFactor
+        TextBoxDec_Zero.Text = DEC_Pot_ZeroReference
+        TextBoxDec_Scale.Text = DEC_Pot_ScaleFactor
+
     End Sub
 
     Private Sub ComboBox1_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ComboBox1.SelectedIndexChanged
@@ -29,9 +38,41 @@
 
     Dim mcstate As Integer = 0
 
-    Private Sub processCmd(cmd As String)
-        List1.AppendText("cmd: " & cmd & vbCrLf)
+    Private Sub processCmd(sent As String)
+        List1.AppendText("cmd: " & sent & vbCrLf)
+        Dim cmd As String = sent
+        Dim parm As String = ""
+        For i = 1 To Len(sent)
+            parm = Mid(sent, i, 1)
+            If IsNumeric(parm) Or 0 = StrComp(parm, "+") Or 0 = StrComp(parm, "-") Or 0 = StrComp(parm, ".") Then
+                cmd = Mid(sent, 1, i - 1)
+                parm = Mid(sent, i)
+                Exit For
+            End If
+        Next
         Select Case cmd
+            Case "*SEND_HA_ZERO_REF_VAL"
+                TextBoxHA_Zero_Click(Me, EventArgs.Empty)
+            Case "*SEND_HA_SCALE_FACTOR"
+                TextBoxHA_Scale_Click(Me, EventArgs.Empty)
+            Case "*SEND_DEC_ZERO_REF_VAL"
+                TextBoxDec_Zero_Click(Me, EventArgs.Empty)
+            Case "*SEND_DEC_SCALE_FACTOR"
+                TextBoxDec_Scale_Click(Me, EventArgs.Empty)
+
+            Case "*SET_HA_ZERO_REF_VAL"
+                TextBoxHA_Zero.Text = parm
+                HA_Pot_ZeroReference = parm
+            Case "*SET_HA_SCALE_FACTOR"
+                TextBoxHA_Scale.Text = parm
+                HA_Pot_ScaleFactor = parm
+            Case "*SET_DEC_ZERO_REF_VAL"
+                TextBoxDec_Zero.Text = parm
+                DEC_Pot_ZeroReference = parm
+            Case "*SET_DEC_SCALE_FACTOR"
+                TextBoxDec_Scale.Text = parm
+                DEC_Pot_ScaleFactor = parm
+
             Case "*SEND_POSITION"
                 Label10_Click(Me, EventArgs.Empty)
             Case "*SEND_ADC_VALS"
@@ -50,6 +91,7 @@
                         Label8_Click(Me, EventArgs.Empty) ' partly open
                         mcstate -= 1
                 End Select
+
         End Select
     End Sub
 
@@ -62,10 +104,6 @@
         End Try
     End Sub
 
-    Private Const HA_Pot_ZeroReference As Integer = 512
-    Private Const DEC_Pot_ZeroReference As Integer = 512
-    Private Const HA_Pot_ScaleFactor As Double = 0.38136 ' about 23" per tic
-    Private Const DEC_Pot_ScaleFactor As Double = 0.39823
 
 #Region "button code"
     Private Sub Label2_Click(sender As Object, e As EventArgs) Handles Label2.Click
@@ -156,6 +194,23 @@
     Private Sub Label17_Click(sender As Object, e As EventArgs) Handles Label17.Click
         sendmsg("DEC_POT_SLIPPAGE_ERROR")
     End Sub
+
+    Private Sub TextBoxHA_Zero_Click(sender As Object, e As EventArgs) Handles TextBoxHA_Zero.Click
+        sendmsg("HA ZERO REF VAL: " + TextBoxHA_Zero.Text)
+    End Sub
+
+    Private Sub TextBoxHA_Scale_Click(sender As Object, e As EventArgs) Handles TextBoxHA_Scale.Click
+        sendmsg("HA SCALE FACTOR VAL: " + TextBoxHA_Scale.Text)
+    End Sub
+
+    Private Sub TextBoxDec_Zero_Click(sender As Object, e As EventArgs) Handles TextBoxDec_Zero.Click
+        sendmsg("DEC ZERO REF VAL: " + TextBoxDec_Zero.Text)
+    End Sub
+
+    Private Sub TextBoxDec_Scale_Click(sender As Object, e As EventArgs) Handles TextBoxDec_Scale.Click
+        sendmsg("DEC SCALE FACTOR VAL: " + TextBoxDec_Scale.Text)
+    End Sub
+
 
 #End Region
 End Class
