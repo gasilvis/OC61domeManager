@@ -23,7 +23,6 @@
         If Windows.Forms.DialogResult.No = MessageBox.Show("This app should be left running." + vbCrLf + "Are you sure you want to exit?", "PCapp", MessageBoxButtons.YesNo) Then
             e.Cancel = True
         Else
-
             If IsConnected Then
                 If TabControl1.SelectedIndex = 0 Then ' serial port
                     SerialPort1.Close()
@@ -262,16 +261,21 @@
 
     ' from UI buttons (or..) to PC
     Private Sub sendPCcmd(cmd As String)
-        ShowMsg("toPC: " & cmd & vbLf) ' show what we are sending to the PC
         If TabControl1.SelectedIndex = 0 Then ' serial port
-            SerialPort1.Write(cmd)
+            If SerialPort1.IsOpen Then
+                ShowMsg("toPC: " & cmd & vbLf) ' show what we are sending to the PC
+                SerialPort1.Write(cmd)
+            Else
+                MessageBox.Show("Select a serial port to the PC first")
+            End If
         Else ' driver
+            ShowMsg("toPC: " & cmd & vbLf) ' show what we are sending to the PC
             Call driver.CommandBlind(cmd, False) ' send it to the driver blind: don't wait for response
         End If
     End Sub
 
     Private Const dLAT As Double = -43.9856 '-43:59:08
-    Private Const dLONG As Double = 170.465 ' 170.465 ' 170:27:54  East   (Mashnee is -70.633 )
+    Private Const dLONG As Double = 170.465 ' 170:27:54  East   (Mashnee is -70.633 )
 
     Private Function SiderealTime() As Double
         ' local sidereal time now, here, in degrees
