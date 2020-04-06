@@ -67,7 +67,6 @@ Partial Class Form1
         Me.TabPage1 = New System.Windows.Forms.TabPage()
         Me.ComboBox1 = New System.Windows.Forms.ComboBox()
         Me.TabPage2 = New System.Windows.Forms.TabPage()
-        Me.labelDriverId = New System.Windows.Forms.Label()
         Me.buttonConnect = New System.Windows.Forms.Button()
         Me.buttonChoose = New System.Windows.Forms.Button()
         Me.SerialPort1 = New System.IO.Ports.SerialPort(Me.components)
@@ -75,6 +74,7 @@ Partial Class Form1
         Me.cmdSync_DEC_Pot = New System.Windows.Forms.Button()
         Me.cmdSync_HA_Pot = New System.Windows.Forms.Button()
         Me.SerialPort2 = New System.IO.Ports.SerialPort(Me.components)
+        Me.labelDriverId = New System.Windows.Forms.Label()
         Me.GroupBox1.SuspendLayout()
         Me.Frame2.SuspendLayout()
         Me.Frame3.SuspendLayout()
@@ -561,18 +561,6 @@ Partial Class Form1
         Me.TabPage2.Text = "Driver"
         Me.TabPage2.UseVisualStyleBackColor = True
         '
-        'labelDriverId
-        '
-        Me.labelDriverId.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.labelDriverId.DataBindings.Add(New System.Windows.Forms.Binding("Text", Global.ASCOM.OC61domeServer2.My.MySettings.Default, "DriverId", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
-        Me.labelDriverId.Location = New System.Drawing.Point(6, 56)
-        Me.labelDriverId.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
-        Me.labelDriverId.Name = "labelDriverId"
-        Me.labelDriverId.Size = New System.Drawing.Size(271, 30)
-        Me.labelDriverId.TabIndex = 8
-        Me.labelDriverId.Text = Global.ASCOM.OC61domeServer2.My.MySettings.Default.DriverId
-        Me.labelDriverId.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
-        '
         'buttonConnect
         '
         Me.buttonConnect.Location = New System.Drawing.Point(23, 13)
@@ -633,6 +621,18 @@ Partial Class Form1
         'SerialPort2
         '
         '
+        'labelDriverId
+        '
+        Me.labelDriverId.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.labelDriverId.DataBindings.Add(New System.Windows.Forms.Binding("Text", Global.ASCOM.OC61domeServer2.My.MySettings.Default, "DriverId", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
+        Me.labelDriverId.Location = New System.Drawing.Point(6, 56)
+        Me.labelDriverId.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
+        Me.labelDriverId.Name = "labelDriverId"
+        Me.labelDriverId.Size = New System.Drawing.Size(271, 30)
+        Me.labelDriverId.TabIndex = 8
+        Me.labelDriverId.Text = Global.ASCOM.OC61domeServer2.My.MySettings.Default.DriverId
+        Me.labelDriverId.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        '
         'Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(11.0!, 20.0!)
@@ -651,7 +651,7 @@ Partial Class Form1
         Me.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.2!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Margin = New System.Windows.Forms.Padding(6, 5, 6, 5)
         Me.Name = "Form1"
-        Me.Text = "Peripheral Controller Application   ver 3"
+        Me.Text = "Peripheral Controller Application   ver 4"
         Me.GroupBox1.ResumeLayout(False)
         Me.Frame2.ResumeLayout(False)
         Me.Frame3.ResumeLayout(False)

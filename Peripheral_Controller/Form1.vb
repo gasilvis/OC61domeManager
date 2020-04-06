@@ -15,7 +15,7 @@
         Try
             SerialPort2.Open()
         Catch ex As System.UnauthorizedAccessException
-            TabControl1.SelectedIndex = 1 ' switch to driver mode since we are probably the upstream client
+            'TabControl1.SelectedIndex = 1 ' switch to driver mode since we are probably the upstream client
         End Try
     End Sub
 
@@ -46,9 +46,11 @@
     ''' Connects to the device to be tested.
     Private Sub buttonConnect_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles buttonConnect.Click
         If IsConnected Then
-            driver.Connected = False
-            driver.Dispose()
-            driver = Nothing
+            If Not driver Is Nothing Then
+                driver.Connected = False
+                driver.Dispose()
+                driver = Nothing
+            End If
         Else
             driver = New ASCOM.DriverAccess.Dome(My.Settings.DriverId)
             driver.Connected = True
@@ -64,7 +66,8 @@
         Try
             SerialPort1.Open()
         Catch ex As System.UnauthorizedAccessException
-            TabControl1.SelectedIndex = 1 ' switch to driver
+            'TabControl1.SelectedIndex = 1 ' switch to driver
+            MessageBox.Show("This serial port is not available", "PCapp", MessageBoxButtons.OK)
         End Try
 
         ' protocol: receive, no prefix, suffix \r
@@ -81,9 +84,11 @@
 
     Private Sub TabControl1_Selected(sender As Object, e As TabControlEventArgs) Handles TabControl1.Selected
         If TabControl1.SelectedIndex = 0 Then ' serial port
-            driver.Connected = False
-            driver.Dispose()
-            driver = Nothing
+            If Not driver Is Nothing Then
+                driver.Connected = False
+                driver.Dispose()
+                driver = Nothing
+            End If
         Else ' driver
             SerialPort1.Close()
         End If
@@ -255,7 +260,11 @@
     Private Sub ShowMsg(msg As String)
         List1.AppendText(msg)
         ' append to log file, local time stamp
-        My.Computer.FileSystem.WriteAllText("C:\Data\PClog.txt", DateTime.Now.ToString("s") + " " + msg, True)
+        If My.Computer.FileSystem.DirectoryExists("C:\Users\oc61\Documents\ACP Astronomy\Logs") Then
+            My.Computer.FileSystem.WriteAllText("C:\Users\oc61\Documents\ACP Astronomy\Logs\PClog.txt", DateTime.Now.ToString("s") + " " + msg, True)
+        Else
+            My.Computer.FileSystem.WriteAllText("C:\Data\PClog.txt", DateTime.Now.ToString("s") + " " + msg, True)
+        End If
         ' eg   2020-03-17T11:19:04 fromPC: HA+004 DEC-005
     End Sub
 

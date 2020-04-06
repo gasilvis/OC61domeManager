@@ -8,11 +8,11 @@ Imports System.Runtime.InteropServices
 
 ' Review the values of the assembly attributes
 
-<Assembly: AssemblyTitle("ASCOM Test Forms App")>
+<Assembly: AssemblyTitle("Peripheral Controller App")>
 <Assembly: AssemblyDescription("")>
-<Assembly: AssemblyCompany("ASCOM Initiative")>
+<Assembly: AssemblyCompany("AAVSO")>
 <Assembly: AssemblyProduct("Driver Test Forms Application Template VB")>
-<Assembly: AssemblyCopyright("Copyright © ASCOM 2014")>
+<Assembly: AssemblyCopyright("Copyright © AAVSO 2020")>
 <Assembly: AssemblyTrademark("")>
 
 <Assembly: ComVisible(False)>
