@@ -304,6 +304,7 @@
 
     ' Answer back from PC
     Private Sub processPCmsg(cmd As String)
+        Dim Util As New ASCOM.Utilities.Util
         ' maintain states
         ' augmented too
         ' pass on to com31
@@ -345,9 +346,9 @@
             Dim r As Double = Math.Sqrt(x ^ 2 + y ^ 2)
             'now get Alt, Az
             Dim dAZ As Double = Math.Atan(y / x) / d2r
+            dAZ -= 180 ' in the South, 0 is South
+            If dAZ < 0 Then dAZ += 360 ' correct for negative AZ
             Dim dALT As Double = Math.Atan(z / r) / d2r
-            ' correct for negative AZ
-            If dAZ < 0 Then dAZ += 360
             'Dim dLST = Date.Now.ToUniversalTime().Add(TimeSpan.FromHours(dLAT / 15D)) ' toSiderealTime
             Dim dLST As Double = SiderealTime()
             Dim s As String
@@ -355,6 +356,8 @@
             cmd = s 's.Substring(0, s.Length - 2) ' clip tail
             s = String.Format(" DEC{0:+000.0;-000.0}", dDec)
             cmd &= s 's.Substring(0, s.Length - 2)
+            s = " DEChr" & Util.DegreesToDM(dDec)
+            cmd &= s
             'ShowMsg("fromPC: " & cmd & vbCrLf) ' display msg to list
             'SerialPort2.Write(cmd & vbCr) ' send upstream 
             s = String.Format(" ALT{0:+000.0;-000.0}", dALT)
@@ -362,12 +365,12 @@
             If Double.IsNaN(dAZ) Then dAZ = 0 ' not sure why this happens
             s = String.Format(" AZ{0:+000.0;-000.0}", dAZ)
             cmd &= s 's.Substring(0, s.Length - 2)
-            'ShowMsg("fromPC: " & cmd & vbCrLf) ' display msg to list
-            'SerialPort2.Write(cmd & vbCr) ' send upstream 
             s = String.Format(" LST{0:+000.0;-000.0}", dLST)
             cmd &= s 's.Substring(0, s.Length - 2)
             s = String.Format(" RA{0:+000.0;-000.0}", dLST - dHA)
             cmd &= s 's.Substring(0, s.Length - 2)
+            s = " RAhr" & Util.DegreesToHM(dLST - dHA)
+            cmd &= s
             ShowMsg("fromPC: " & cmd & vbCrLf) ' display msg to list
             SerialPort2.Write(cmd & vbCr) ' send upstream 
         ElseIf cmd.Length > 18 AndAlso cmd.Substring(0, 17) = "HA ZERO REF VAL: " Then
@@ -377,7 +380,7 @@
         ElseIf cmd.Length > 19 AndAlso cmd.Substring(0, 18) = "DEC ZERO REF VAL: " Then
             txtDEC_Pot_ZeroRef.Text = Mid(cmd, 19)
         ElseIf cmd.Length > 23 AndAlso cmd.Substring(0, 22) = "DEC SCALE FACTOR VAL: " Then
-                txtDEC_Pot_ScaleFactor.Text = Mid(cmd, 23)
+            txtDEC_Pot_ScaleFactor.Text = Mid(cmd, 23)
         End If
     End Sub
 
