@@ -1,6 +1,7 @@
 ﻿Public Class Form1 ' Peripheral Controller Application
 
     Private driver As ASCOM.DriverAccess.Dome
+    Dim Util As New ASCOM.Utilities.Util
 
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         ' load comport load: Show all available COM ports for the serial connect option
@@ -256,6 +257,25 @@
         sendPCcmd("*FIND_DEC_OPTO" & vbCr)
     End Sub
 
+    Private Sub cmdSyncScope_Click(sender As Object, e As EventArgs) Handles cmdSyncScope.Click
+        Dim ds As String = " DEChr" & Util.DegreesToDM(dDec)
+        Dim rs As String = " RAhr" & Util.DegreesToHM(dRA)
+        If Windows.Forms.DialogResult.Yes = MessageBox.Show("Are you sure that you want to send a sync the scope to " + rs + " and " + ds + " ?", "PCapp Sync EXPERIMENTAL", MessageBoxButtons.YesNo) Then
+            Try
+                Dim telescope As ASCOM.DriverAccess.Telescope = New ASCOM.DriverAccess.Telescope("ScopeCraft.Telescop")
+                telescope.Connected = True
+                Dim tds As String = " DEChr" & Util.DegreesToDM(telescope.Declination)
+                Dim trs As String = " RAhr" & Util.DegreesToHM(telescope.RightAscension)
+                ShowMsg("Scope is currently:  " & trs & " and " & tds)
+                telescope.Connected = False
+                telescope.Dispose()
+                telescope = Nothing
+            Catch
+                ShowMsg("cannot connect to telescope")
+            End Try
+        End If
+    End Sub
+
 #End Region
     Private Sub ShowMsg(msg As String)
         List1.AppendText(msg)
@@ -302,9 +322,11 @@
 
     End Function
 
+    Private dRA As Double
+    Dim dDec As Double
+
     ' Answer back from PC
     Private Sub processPCmsg(cmd As String)
-        Dim Util As New ASCOM.Utilities.Util
         ' maintain states
         ' augmented too
         ' pass on to com31
@@ -314,7 +336,7 @@
         If (cmd.Substring(0, 2) = "HA" And cmd.Length = 14) Then ' eg  'HA+012 DEC-015'
             ' pass on, but send a second, better, signal with Dec corrected and Alt and Az
             Dim dHA As Double = CDbl(cmd.Substring(2, 4))
-            Dim dDec As Double = CDbl(cmd.Substring(10, 4))
+            dDec = CDbl(cmd.Substring(10, 4))
             ' correct dec to 90 to -90
             If dDec > 90 Then
                 dDec = 180 - dDec
@@ -367,9 +389,10 @@
             cmd &= s 's.Substring(0, s.Length - 2)
             s = String.Format(" LST{0:+000.0;-000.0}", dLST)
             cmd &= s 's.Substring(0, s.Length - 2)
-            s = String.Format(" RA{0:+000.0;-000.0}", dLST - dHA)
+            dRA = dLST - dHA
+            s = String.Format(" RA{0:+000.0;-000.0}", dRA)
             cmd &= s 's.Substring(0, s.Length - 2)
-            s = " RAhr" & Util.DegreesToHM(dLST - dHA)
+            s = " RAhr" & Util.DegreesToHM(dRA)
             cmd &= s
             ShowMsg("fromPC: " & cmd & vbCrLf) ' display msg to list
             SerialPort2.Write(cmd & vbCr) ' send upstream 
@@ -381,6 +404,10 @@
             txtDEC_Pot_ZeroRef.Text = Mid(cmd, 19)
         ElseIf cmd.Length > 23 AndAlso cmd.Substring(0, 22) = "DEC SCALE FACTOR VAL: " Then
             txtDEC_Pot_ScaleFactor.Text = Mid(cmd, 23)
+        ElseIf cmd.Length > 16 AndAlso cmd.Substring(0, 15) = "HA_POT_SLIPPAGE" Then
+            sendPCcmd("*SEND_ADC_VALS" & vbCr)
+        ElseIf cmd.Length > 17 AndAlso cmd.Substring(0, 16) = "DEC_POT_SLIPPAGE" Then
+            sendPCcmd("*SEND_ADC_VALS" & vbCr)
         End If
     End Sub
 
@@ -406,6 +433,5 @@
         Catch
         End Try
     End Sub
-
 
 End Class

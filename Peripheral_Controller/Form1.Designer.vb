@@ -75,6 +75,8 @@ Partial Class Form1
         Me.cmdSync_DEC_Pot = New System.Windows.Forms.Button()
         Me.cmdSync_HA_Pot = New System.Windows.Forms.Button()
         Me.SerialPort2 = New System.IO.Ports.SerialPort(Me.components)
+        Me.GroupBox8 = New System.Windows.Forms.GroupBox()
+        Me.cmdSyncScope = New System.Windows.Forms.Button()
         Me.GroupBox1.SuspendLayout()
         Me.Frame2.SuspendLayout()
         Me.Frame3.SuspendLayout()
@@ -87,6 +89,7 @@ Partial Class Form1
         Me.TabPage1.SuspendLayout()
         Me.TabPage2.SuspendLayout()
         Me.GroupBox7.SuspendLayout()
+        Me.GroupBox8.SuspendLayout()
         Me.SuspendLayout()
         '
         'GroupBox1
@@ -633,11 +636,32 @@ Partial Class Form1
         'SerialPort2
         '
         '
+        'GroupBox8
+        '
+        Me.GroupBox8.BackColor = System.Drawing.SystemColors.GradientActiveCaption
+        Me.GroupBox8.Controls.Add(Me.cmdSyncScope)
+        Me.GroupBox8.Location = New System.Drawing.Point(484, 529)
+        Me.GroupBox8.Name = "GroupBox8"
+        Me.GroupBox8.Size = New System.Drawing.Size(200, 63)
+        Me.GroupBox8.TabIndex = 17
+        Me.GroupBox8.TabStop = False
+        '
+        'cmdSyncScope
+        '
+        Me.cmdSyncScope.Location = New System.Drawing.Point(31, 11)
+        Me.cmdSyncScope.Margin = New System.Windows.Forms.Padding(4)
+        Me.cmdSyncScope.Name = "cmdSyncScope"
+        Me.cmdSyncScope.Size = New System.Drawing.Size(139, 40)
+        Me.cmdSyncScope.TabIndex = 3
+        Me.cmdSyncScope.Text = "Sync scope"
+        Me.cmdSyncScope.UseVisualStyleBackColor = True
+        '
         'Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(11.0!, 20.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1036, 605)
+        Me.Controls.Add(Me.GroupBox8)
         Me.Controls.Add(Me.GroupBox7)
         Me.Controls.Add(Me.TabControl1)
         Me.Controls.Add(Me.GroupBox6)
@@ -651,7 +675,7 @@ Partial Class Form1
         Me.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.2!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Margin = New System.Windows.Forms.Padding(6, 5, 6, 5)
         Me.Name = "Form1"
-        Me.Text = "Peripheral Controller Application   ver 5"
+        Me.Text = "Peripheral Controller Application   ver 6"
         Me.GroupBox1.ResumeLayout(False)
         Me.Frame2.ResumeLayout(False)
         Me.Frame3.ResumeLayout(False)
@@ -666,6 +690,7 @@ Partial Class Form1
         Me.TabPage1.ResumeLayout(False)
         Me.TabPage2.ResumeLayout(False)
         Me.GroupBox7.ResumeLayout(False)
+        Me.GroupBox8.ResumeLayout(False)
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -722,4 +747,6 @@ Partial Class Form1
     Private WithEvents cmdSync_DEC_Pot As Button
     Private WithEvents cmdSync_HA_Pot As Button
     Friend WithEvents SerialPort2 As IO.Ports.SerialPort
+    Friend WithEvents GroupBox8 As GroupBox
+    Private WithEvents cmdSyncScope As Button
 End Class
