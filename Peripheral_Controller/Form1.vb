@@ -258,13 +258,13 @@
     End Sub
 
     Private Sub cmdSyncScope_Click(sender As Object, e As EventArgs) Handles cmdSyncScope.Click
-        Dim ds As String = " DEChr" & Util.DegreesToDM(dDec)
-        Dim rs As String = " RAhr" & Util.DegreesToHM(dRA)
+        Dim ds As String = " DECdm" & Util.DegreesToDM(dDec)
+        Dim rs As String = " RAhm" & Util.DegreesToHM(dRA)
         If Windows.Forms.DialogResult.Yes = MessageBox.Show("Are you sure that you want to send a sync the scope to " + rs + " and " + ds + " ?", "PCapp Sync EXPERIMENTAL", MessageBoxButtons.YesNo) Then
             Try
-                Dim telescope As ASCOM.DriverAccess.Telescope = New ASCOM.DriverAccess.Telescope("ScopeCraft.Telescop")
+                Dim telescope As ASCOM.DriverAccess.Telescope = New ASCOM.DriverAccess.Telescope("ACP.Telescope")
                 telescope.Connected = True
-                Dim tds As String = " DEChr" & Util.DegreesToDM(telescope.Declination)
+                Dim tds As String = " DECdm" & Util.DegreesToDM(telescope.Declination)
                 Dim trs As String = " RAhr" & Util.DegreesToHM(telescope.RightAscension)
                 ShowMsg("Scope is currently:  " & trs & " and " & tds)
                 telescope.Connected = False
@@ -368,32 +368,26 @@
             Dim r As Double = Math.Sqrt(x ^ 2 + y ^ 2)
             'now get Alt, Az
             Dim dAZ As Double = Math.Atan(y / x) / d2r
-            dAZ -= 180 ' in the South, 0 is South
+            'dAZ -= 180 ' in the South, 0 is South
             If dAZ < 0 Then dAZ += 360 ' correct for negative AZ
             Dim dALT As Double = Math.Atan(z / r) / d2r
-            'Dim dLST = Date.Now.ToUniversalTime().Add(TimeSpan.FromHours(dLAT / 15D)) ' toSiderealTime
+            'Dim dLST = Date.Now.ToUniversalTime().Add(TimeSpan.FromHours(dLAT / 15D)) ' to SiderealTime
             Dim dLST As Double = SiderealTime()
-            Dim s As String
-            s = String.Format("True HA{0:+000.0;-000.0}", dHA) ' to allow -000
-            cmd = s 's.Substring(0, s.Length - 2) ' clip tail
-            s = String.Format(" DEC{0:+000.0;-000.0}", dDec)
-            cmd &= s 's.Substring(0, s.Length - 2)
-            s = " DEChr" & Util.DegreesToDM(dDec)
-            cmd &= s
-            'ShowMsg("fromPC: " & cmd & vbCrLf) ' display msg to list
-            'SerialPort2.Write(cmd & vbCr) ' send upstream 
-            s = String.Format(" ALT{0:+000.0;-000.0}", dALT)
-            cmd &= s 's.Substring(0, s.Length - 2)
-            If Double.IsNaN(dAZ) Then dAZ = 0 ' not sure why this happens
-            s = String.Format(" AZ{0:+000.0;-000.0}", dAZ)
-            cmd &= s 's.Substring(0, s.Length - 2)
-            s = String.Format(" LST{0:+000.0;-000.0}", dLST)
-            cmd &= s 's.Substring(0, s.Length - 2)
+            'Dim s As String
             dRA = dLST - dHA
-            s = String.Format(" RA{0:+000.0;-000.0}", dRA)
-            cmd &= s 's.Substring(0, s.Length - 2)
-            s = " RAhr" & Util.DegreesToHM(dRA)
-            cmd &= s
+            cmd = ""
+            's = String.Format("True HA{0:+000.0;-000.0}", dHA) ' to allow -000
+            cmd &= " HAhm " & Util.DegreesToHM(dHA)
+            cmd &= String.Format(" DEC{0:+000.0;-000.0}", dDec)
+            cmd &= " DECdm " & Util.DegreesToDM(dDec)
+            'cmd &= String.Format(" RA{0:+000.0;-000.0}", dRA)
+            cmd &= " RAhm " & Util.DegreesToHM(dRA)
+            'cmd &= String.Format(" LST{0:+000.0;-000.0}", dLST)
+            cmd &= " LSThm " & Util.DegreesToHM(dLST)
+            cmd &= String.Format(" ALT{0:+000.0;-000.0}", dALT)
+            If Double.IsNaN(dAZ) Then dAZ = 0 ' not sure why this happens
+            cmd &= String.Format(" AZ{0:+000.0;-000.0}", dAZ)
+
             ShowMsg("fromPC: " & cmd & vbCrLf) ' display msg to list
             SerialPort2.Write(cmd & vbCr) ' send upstream 
         ElseIf cmd.Length > 18 AndAlso cmd.Substring(0, 17) = "HA ZERO REF VAL: " Then

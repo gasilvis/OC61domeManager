@@ -158,7 +158,7 @@ Partial Class Form1
         Me.cmdShutMirrorCover.Name = "cmdShutMirrorCover"
         Me.cmdShutMirrorCover.Size = New System.Drawing.Size(139, 40)
         Me.cmdShutMirrorCover.TabIndex = 1
-        Me.cmdShutMirrorCover.Text = "Shut"
+        Me.cmdShutMirrorCover.Text = "Close"
         Me.cmdShutMirrorCover.UseVisualStyleBackColor = True
         '
         'cmdOpenMirrorCover
@@ -653,7 +653,7 @@ Partial Class Form1
         Me.cmdSyncScope.Name = "cmdSyncScope"
         Me.cmdSyncScope.Size = New System.Drawing.Size(139, 40)
         Me.cmdSyncScope.TabIndex = 3
-        Me.cmdSyncScope.Text = "Sync scope"
+        Me.cmdSyncScope.Text = "Sync (test)"
         Me.cmdSyncScope.UseVisualStyleBackColor = True
         '
         'Form1
@@ -675,7 +675,7 @@ Partial Class Form1
         Me.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.2!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Margin = New System.Windows.Forms.Padding(6, 5, 6, 5)
         Me.Name = "Form1"
-        Me.Text = "Peripheral Controller Application   ver 6"
+        Me.Text = "Peripheral Controller Application   ver 6c"
         Me.GroupBox1.ResumeLayout(False)
         Me.Frame2.ResumeLayout(False)
         Me.Frame3.ResumeLayout(False)
